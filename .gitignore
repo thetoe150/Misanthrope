@@ -1,0 +1,8 @@
+**/.exe
+/build/
+/bin/debug/
+/res/cache/
+/src/shaders/*.spv
+/src/shaders/*.spvasm
+/.cache/
+/compile_commands.json

@@ -1,0 +1,99 @@
+#version 450
+
+struct Snowflake{
+	vec3 pos;
+	float weight;
+};
+
+struct Vortex{
+	vec3 pos;
+	float force;
+	float radius;
+	float height;
+};
+
+layout (constant_id = 0) const int vortexCount = 10;
+layout (local_size_x = 1024) in;
+
+layout (push_constant) uniform DataPushConstant{
+	int snowflakeCount;
+	float deltaTime;
+} p_const;
+
+layout (std140, binding = 0) buffer inputSnowflakeStorageBuffer{
+	Snowflake s_inputSnowflakes[ ];
+};
+
+layout (std140, binding = 1) buffer outputSnowflakeStorageBuffer{
+	Snowflake s_outputSnowflakes[ ];
+};
+
+layout (binding = 2) uniform VortexUniformBuffer{
+	Vortex u_vortex[vortexCount];
+};
+
+struct Force{
+	float value;
+	vec2 direction;
+};
+
+void main(){
+    uint index = gl_GlobalInvocationID.x;
+	if (index > p_const.snowflakeCount)
+		return;
+
+	Force sum_vortex_force;
+	sum_vortex_force.direction = vec2(0.0f, 0.0f);
+	sum_vortex_force.value = 0;
+	for (int i = 0; i < vortexCount; i++)
+	{
+		// distance check
+		float y_distance = abs(u_vortex[i].pos.y - s_inputSnowflakes[index].pos.y);
+		if (y_distance >= u_vortex[i].height)
+			continue;
+
+		float xz_distance = distance(u_vortex[i].pos.xz, s_inputSnowflakes[index].pos.xz);
+		if (xz_distance > 2 * u_vortex[i].radius)
+			continue;
+
+		// calculate force
+		float f = 0;
+		float y_ratio = 1 - y_distance / u_vortex[i].height;
+		float xz_ratio = xz_distance <= u_vortex[i].radius ? (xz_distance / u_vortex[i].radius)
+			: (1 - (xz_distance / u_vortex[i].radius - 1));
+		f = xz_ratio * u_vortex[i].force * y_ratio;
+
+		// calculate direction
+		vec2 dir;
+		vec2 origin_vec = s_inputSnowflakes[index].pos.xz - u_vortex[i].pos.xz;
+		vec2 perpen_vec = vec2(1, - origin_vec.x / origin_vec.y);
+		dir = normalize(perpen_vec);
+
+		vec2 new_force = dir * f + sum_vortex_force.direction * sum_vortex_force.value;
+
+		sum_vortex_force.value = length(new_force);
+		sum_vortex_force.direction = normalize(new_force);
+	}
+
+	// apply force
+	float weight_force = s_inputSnowflakes[index].weight * 9.8f;
+	vec3 total_force = weight_force * vec3(0, -1, 0) 
+		+ vec3(sum_vortex_force.direction.x, 0, sum_vortex_force.direction.y) * sum_vortex_force.value;
+
+	vec3 d = vec3(total_force) * p_const.deltaTime * 0.1;
+
+	// bound snowflake pos
+	s_outputSnowflakes[index].pos = s_inputSnowflakes[index].pos + d;
+	if (s_outputSnowflakes[index].pos.x < -20.f)
+		s_outputSnowflakes[index].pos.x = 20.f;
+	else if (s_outputSnowflakes[index].pos.x > 20.f)
+		s_outputSnowflakes[index].pos.x = -20.f;
+
+	if (s_outputSnowflakes[index].pos.y < -5.f)
+		s_outputSnowflakes[index].pos.y = 20.f;
+
+	if (s_outputSnowflakes[index].pos.z < -20.f)
+		s_outputSnowflakes[index].pos.z = 20.f;
+	else if (s_outputSnowflakes[index].pos.z > 20.f)
+		s_outputSnowflakes[index].pos.z = -20.f;
+}
