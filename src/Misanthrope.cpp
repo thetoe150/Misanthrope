@@ -1,4 +1,4 @@
-#include "MonoVulkan.hpp"
+#include "Misanthrope.hpp"
 #include "spirv_reflect.h"
 #include "vulkan/vulkan_core.h"
 
@@ -930,7 +930,7 @@ private:
 		if(dataSize){
 			char* data = new char[dataSize]();
 			vkGetPipelineCacheData(device, m_pipelineCache, &dataSize, data);
-			writeFile("../../res/cache/pipeline_cache.blob", data, dataSize);
+			writeFile("../../data/cache/pipeline_cache.blob", data, dataSize);
 		}
 	}
 
@@ -2054,10 +2054,10 @@ private:
 	}
 
     void createPipelineCache() {
-		if(!isFileExist("../../res/cache/pipeline_cache.blob"))
-			makeFile("../../res/cache/pipeline_cache.blob");
+		if(!isFileExist("../../data/cache/pipeline_cache.blob"))
+			makeFile("../../data/cache/pipeline_cache.blob");
 
-		pipelineCacheBlob = readFile("../../res/cache/pipeline_cache.blob");
+		pipelineCacheBlob = readFile("../../data/cache/pipeline_cache.blob");
 
 		VkPipelineCacheCreateInfo pipelineCacheInfo{};
 		pipelineCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -4526,7 +4526,7 @@ private:
 	}
 
 	void loadInstanceData() {
-		std::ifstream file("../../res/instance_position.csv");
+		std::ifstream file("../../data/instance_position.csv");
 		if(file.is_open()) {
 			std::string line;
 			while(std::getline(file, line)){

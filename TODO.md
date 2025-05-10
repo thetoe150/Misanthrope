@@ -1,0 +1,3 @@
+- refactor memory allocation
+- dynamic light
+- export time

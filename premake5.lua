@@ -1,25 +1,31 @@
-workspace "MonoVulkan"
+workspace "Misanthrope"
 	configurations {"Debug", "Release"}
 	location "build"
 
-project "MonoVulkan"
+project "Misanthrope"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	targetname "MONO"
+	targetname "Misanthrope"
 	architecture "x86_64"
 
 	-- gcc makefile have cwd at binary, msvc have cwd at project for some reason
 	-- this is for loading resource at the right path
-	location "build/MonoVulkan"
+	location "build/Misanthrope"
 
-	includedirs {"inc/", "tracy/public/tracy", "inc/vma", "inc/imgui", "src/meshoptimizer"}
-	files {"src/MonoVulkan.cpp", "src/backward.cpp", "src/imgui/*.cpp", "tracy/public/TracyClient.cpp", "src/spirv_reflect.c", "src/spirv_reflect_output.cpp"}
+	-- libs with stand-alone tranlations unit
+	includedirs {"extern/GLFW/include/", "extern/backward/include/", "extern/imgui/include/", "extern/meshoptimizer/include/", "extern/spirv_reflect/include/"}
+	-- header only libs
+	includedirs {"extern/", "src/", "extern/tracy/public/tracy"}
+	files {"src/Misanthrope.cpp"}
+	files {"extern/tracy/public/TracyClient.cpp"}
 
 	defines {"TRACY_ENABLE", "TRACY_VK_USE_SYMBOL_TABLE", "ENABLE_OPTIMIZE_MESH"}
-	libdirs {"lib", "build/meshoptimizer/bin", "build/GLFW/bin"}
+	libdirs {"lib", "build/meshoptimizer/bin", "build/GLFW/bin", "build/imgui/bin", "build/spirv_reflect/bin"}
 	links {"meshoptimizer"}
 	links {"GLFW"}
+	links {"imgui"}
+	links {"spirv_reflect"}
 
 	warnings "Default"
 
@@ -41,8 +47,8 @@ project "MonoVulkan"
 		links {"vulkan", "dw"}
 	filter {}
 
-	buildoptions {"-std=c++17"}
-	linkoptions {"-std=c++17"}
+	-- buildoptions {"-std=c++17"}
+	-- linkoptions {"-std=c++17"}
 
 	filter "configurations:Release"
 		defines {"NDEBUG"}
@@ -58,7 +64,7 @@ project "MonoVulkan"
 
 -----------------------------------------------------------------------------------------------
 
-project "MeshOptimizer"
+project "meshOptimizer"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -71,40 +77,81 @@ project "MeshOptimizer"
 	targetdir "build/meshoptimizer/bin"
 	targetname "meshoptimizer"
 
-	includedirs {"src/meshoptimizer"}
-	files {"src/meshoptimizer/**.cpp"}
-	removefiles {"src/meshoptimizer/nanite.cpp", "src/meshoptimizer/tests.cpp",  "src/meshoptimizer/main.cpp",  "src/meshoptimizer/ansi.c"}
+	includedirs {"extern/meshoptimizer/include"}
+	files {"extern/meshoptimizer/src/**.cpp"}
+	removefiles {"extern/meshoptimizer/src/nanite.cpp", "extern/meshoptimizer/src/tests.cpp",  "extern/meshoptimizer/src/main.cpp",  "extern/meshoptimizer/src/ansi.c"}
 	-- defines {}
 	optimize "On"
 
 -----------------------------------------------------------------------------------------------
+
 project "GLFW"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
 	architecture "x86_64"
 
 	location "build/GLFW"
 	targetdir "build/GLFW/bin"
 	targetname "GLFW"
 
-	includedirs {"inc/GLFW", "src/GLFW"}
-	files {"src/GLFW/init.c", "src/GLFW/context.c", "src/GLFW/input.c", "src/GLFW/vulkan.c", "src/GLFW/window.c", "src/GLFW/platform.c", "src/GLFW/monitor.c",
-								"src/GLFW/null_init.c", "src/GLFW/null_joystick.c", "src/GLFW/null_monitor.c", "src/GLFW/null_window.c"}
+	includedirs {"extern/GLFW/include"}
+	files {"extern/GLFW/src/init.c", "extern/GLFW/src/context.c", "extern/GLFW/src/input.c", "extern/GLFW/src/vulkan.c", "extern/GLFW/src/window.c", "extern/GLFW/src/platform.c", "extern/GLFW/src/monitor.c",
+								"extern/GLFW/src/null_init.c", "extern/GLFW/src/null_joystick.c", "extern/GLFW/src/null_monitor.c", "extern/GLFW/src/null_window.c"}
 
 	filter "system:linux"
-		files {"src/GLFW/x11/*.c"}
-		includedirs {"src/GLFW/x11"}
+		files {"extern/GLFW/src/x11/*.c"}
+		includedirs {"extern/GLFW/src/x11", "extern/GLFW/src"}
 		defines {"_GLFW_X11"}
 	filter {}
 
 	filter "system:Windows"
-		files {"src/GLFW/win/*.c"}
-		includedirs {"src/GLFW/win"}
+		files {"extern/GLFW/src/win/*.c"}
+		includedirs {"extern/GLFW/src/win"}
 		defines {"_GLFW_WIN32"}
 	filter {}
 
 	optimize "On"
 
+-----------------------------------------------------------------------------------------------
+
+project "imgui"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	architecture "x86_64"
+	filter "system:windows"
+		toolset "msc"
+	filter {}
+
+	location "build/imgui"
+	targetdir "build/imgui/bin"
+	targetname "imgui"
+
+	includedirs {"extern/imgui/include"}
+	files {"extern/imgui/src/**.cpp"}
+	-- defines {}
+	optimize "On"
+
+-----------------------------------------------------------------------------------------------
+
+project "spirv_reflect"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	architecture "x86_64"
+	filter "system:windows"
+		toolset "msc"
+	filter {}
+
+	location "build/spirv_reflect"
+	targetdir "build/spirv_reflect/bin"
+	targetname "spirv_reflect"
+
+	includedirs {"extern/spirv_reflect/include", "extern"}
+	files {"extern/spirv_reflect/src/**.cpp", "extern/spirv_reflect/src/**.c"}
+	-- defines {}
+	optimize "On"
 
 -----------------------------------------------------------------------------------------------
 newaction {

@@ -24,13 +24,13 @@
 
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_STB_IMAGE_WRITE
-#include <tiny_gltf.h>
+#include <tiny_gltf/tiny_gltf.h>
 
 #include <spirv_reflect.h>
 #include <spirv_reflect_output.h>
 
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_vulkan.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
 
 #include "Tracy.hpp"
 #include "TracyVulkan.hpp"
@@ -86,11 +86,11 @@ static float s_shadowRightPlane = 10.f;
 static float s_shadowBotPlane = -10.f;
 static float s_shadowTopPlane = 10.f;
 
-static const char* CANDLE_MODEL_PATH = "../../res/models/candles_set/scene.gltf";
-static const char* SNOWFLAKE_MODEL_PATH = "../../res/models/snowflake/scene.gltf";
-static const char* TOWER_TEXTURE_PATH = "../../res/textures/Wood_Tower_Col.jpg";
-// const std::string SNOWFLAKE_TEXTURE_PATH = "res/textures/Wood_Tower_Col.jpg";
-// const std::string TOWER_MODEL_PATH = "../../res/models/wooden_watch_tower2.obj";
+static const char* CANDLE_MODEL_PATH = "../../data/models/candles_set/scene.gltf";
+static const char* SNOWFLAKE_MODEL_PATH = "../../data/models/snowflake/scene.gltf";
+static const char* TOWER_TEXTURE_PATH = "../../data/textudata/Wood_Tower_Col.jpg";
+// const std::string SNOWFLAKE_TEXTURE_PATH = "data/textudata/Wood_Tower_Col.jpg";
+// const std::string TOWER_MODEL_PATH = "../../data/models/wooden_watch_tower2.obj";
 
 constexpr unsigned int SNOWFLAKE_COUNT = 4096;
 constexpr float CANDLE_ANIMATION_SPEED = 0.5f;
@@ -228,12 +228,12 @@ static float skyboxVertices[] = {
 };
 
 static std::array<const char*, 6> cubeBoxImageFiles{
-	"../../res/skyboxes/IceLake/posx.jpg",
-	"../../res/skyboxes/IceLake/negx.jpg",
-	"../../res/skyboxes/IceLake/posy.jpg",
-	"../../res/skyboxes/IceLake/negy.jpg",
-	"../../res/skyboxes/IceLake/posz.jpg",
-	"../../res/skyboxes/IceLake/negz.jpg"
+	"../../data/skyboxes/IceLake/posx.jpg",
+	"../../data/skyboxes/IceLake/negx.jpg",
+	"../../data/skyboxes/IceLake/posy.jpg",
+	"../../data/skyboxes/IceLake/negy.jpg",
+	"../../data/skyboxes/IceLake/posz.jpg",
+	"../../data/skyboxes/IceLake/negz.jpg"
 };
 
 static std::map<std::string, std::string> AttrNameMap;
