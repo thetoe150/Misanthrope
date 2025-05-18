@@ -2,12 +2,34 @@ workspace "Misanthrope"
 	configurations {"Debug", "Release"}
 	location "build"
 
+	filter "configurations:Release"
+		defines {"NDEBUG"}
+		optimize "On"
+	filter {}
+	
+	filter "configurations:Debug"
+		defines {"DEBUG"}
+		symbols "On"
+	filter {}
+
+	filter "system:windows"
+		defines {"NODEFAULTLIB"}
+	filter {}
+
 project "Misanthrope"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	targetname "Misanthrope"
 	architecture "x86_64"
+
+	filter "configurations:Release"
+		targetdir "bin/release"
+	filter {}
+	
+	filter "configurations:Debug"
+		targetdir "bin/debug"
+	filter {}
 
 	-- gcc makefile have cwd at binary, msvc have cwd at project for some reason
 	-- this is for loading resource at the right path
@@ -49,18 +71,6 @@ project "Misanthrope"
 
 	-- buildoptions {"-std=c++17"}
 	-- linkoptions {"-std=c++17"}
-
-	filter "configurations:Release"
-		defines {"NDEBUG"}
-		optimize "On"
-		targetdir "bin/release"
-	filter {}
-	
-	filter "configurations:Debug"
-		defines {"DEBUG"}
-		symbols "On"
-		targetdir "bin/debug"
-	filter {}
 
 -----------------------------------------------------------------------------------------------
 
@@ -107,7 +117,7 @@ project "GLFW"
 
 	filter "system:Windows"
 		files {"extern/GLFW/src/win/*.c"}
-		includedirs {"extern/GLFW/src/win"}
+		includedirs {"extern/GLFW/src/win", "extern/GLFW/src"}
 		defines {"_GLFW_WIN32"}
 	filter {}
 
@@ -128,10 +138,10 @@ project "imgui"
 	targetdir "build/imgui/bin"
 	targetname "imgui"
 
-	includedirs {"extern/imgui/include"}
+	includedirs {"extern/imgui/include", "extern"}
 	files {"extern/imgui/src/**.cpp"}
 	-- defines {}
-	optimize "On"
+	-- optimize "On"
 
 -----------------------------------------------------------------------------------------------
 
