@@ -1,7 +1,7 @@
 **/.exe
 /build/
 /bin/debug/
-/res/cache/
+/data/cache/
 /src/shaders/*.spv
 /src/shaders/*.spvasm
 /.cache/

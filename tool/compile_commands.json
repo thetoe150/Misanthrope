@@ -1,0 +1,7 @@
+[
+	{
+		"directory": "/home/eanigmal/Code/Projects/Misanthrope/tool",
+		"arguments": ["g++", "-std=c++17", "-I../extern/spirv"],
+		"file": "src/MonoVulkan.cpp"
+	}
+]
