@@ -1,12 +1,45 @@
 #include <cstdint>
 #include <stdio.h>
 #include <map>
-#include "unified1/spirv.h"
+#include "spirv/unified1/spirv.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 #include "Exporter.h"
 
+void testRapidJson() {
+	rapidjson::Document doc;
+	doc.SetObject();
+	rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+
+	rapidjson::Value object1{rapidjson::kObjectType};
+	object1.AddMember("key1", "value1", allocator);
+	object1.AddMember("key2", "value2", allocator);
+	doc.AddMember("object1", object1, allocator);
+	doc.AddMember("key3", "value3", allocator);
+
+    // bool removed = doc.RemoveMember("object1");
+	// if (removed)
+	// 	printf("object1 is removed\n");
+    // doc.AddMember("object1", object1, allocator);
+    // // Remove object by iterator using EraseMember
+    // auto it = doc.FindMember("object1");
+    // if (it != doc.MemberEnd()) {
+    //     doc.EraseMember(it);
+	// }
+
+	rapidjson::StringBuffer buffer; 
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	doc.Accept(writer);
+	printf("output string: %s\n", buffer.GetString());
+}
+
 int main(int argc, char** argv) {
 	assert(argc == 3);
+	testRapidJson();
+	return 0;
+
 	const char* shaderPath = argv[1];
 	FILE *file = fopen(shaderPath, "rb");
 	uint32_t spvBlob[2048];

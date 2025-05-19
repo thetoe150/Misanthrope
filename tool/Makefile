@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-I./ -I../extern/spirv -ggdb -DDEBUG
+CFLAGS=-I./ -I../extern/ -ggdb -DDEBUG
 LDFLAGS=
 EXE=binary/window/Exporter
 
