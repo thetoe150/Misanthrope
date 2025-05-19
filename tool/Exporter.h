@@ -7,6 +7,7 @@
 #define MAX_BINDING 5
 #define MAX_LOCALTION 10
 #define MAX_PUSH_CONSTANT 3
+
 enum class Primitive {
 	I = 0,
 	F,

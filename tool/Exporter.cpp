@@ -8,10 +8,10 @@
 int main(int argc, char** argv) {
 	assert(argc == 3);
 	const char* shaderPath = argv[1];
-	printf("input shader path: %s\n", shaderPath);
-	FILE *file = fopen(shaderPath, "r");
+	FILE *file = fopen(shaderPath, "rb");
 	uint32_t spvBlob[2048];
-	uint32_t spvSize = fread(spvBlob, sizeof(uint32_t), 2048, file);
+	size_t spvSize = fread(spvBlob, sizeof(uint32_t), 2048, file);
+	printf("input shader path: %s, with size: %i\n", shaderPath, spvSize);
 	Reflection ref = retrieveReflection(spvBlob, spvSize);
 	fclose(file);
 	printReflection(ref);
@@ -106,7 +106,6 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 				else if (decorate == SpvDecorationBlock) {
 				}
 
-
 				break;
 			}
 			case SpvOpVariable: {
@@ -123,7 +122,7 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 						}
 					}
 					assert(first == false);
-					if (storageClass == uint32_t(1))
+					if (storageClass == SpvStorageClassInput)
 						reflection.locations[it].isInput = true;
 
 					reflection.locations[it].type = types[pointerToType[pointerType]];
@@ -143,6 +142,7 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 						reflection.bindings[it].type = Descriptor::SAMPLER;
 					else if (storageClass == SpvStorageClassUniform)
 						reflection.bindings[it].type = Descriptor::UNIFORM;
+
 					// push constant don't have decoration for it
 					// else if (storageClass == uint32_t(9))
 					// 	reflection.bindings[it].type = Descriptor::PUSH_CONSTANT;
@@ -153,7 +153,7 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 			case SpvOpTypePointer: {
 				// the type for the pointer allready declare for this type
 				uint32_t storageClass = spvBlob[w+2];
-				if (storageClass == SpvStorageClassInput || SpvStorageClassOutput)
+				if (storageClass == SpvStorageClassInput || storageClass == SpvStorageClassOutput)
 					pointerToType.emplace(spvBlob[w+1], spvBlob[w+3]);
 				break;
 			}
@@ -161,11 +161,12 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 				break;
 			}
 			case SpvOpTypeVector: {
-				if (spvBlob[w+3] == 2)
+				uint32_t count = spvBlob[w+3];
+				if (count == 2)
 					types.emplace(spvBlob[w+1], Primitive::F2);
-				else if (spvBlob[w+3] == 3)
+				else if (count == 3)
 					types.emplace(spvBlob[w+1], Primitive::F3);
-				else if (spvBlob[w+3] == 4)
+				else if (count == 4)
 					types.emplace(spvBlob[w+1], Primitive::F4);
 
 				break;

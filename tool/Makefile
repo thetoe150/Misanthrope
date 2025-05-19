@@ -1,11 +1,12 @@
 CC=g++
 CFLAGS=-I./ -I../extern/spirv -ggdb -DDEBUG
 LDFLAGS=
+EXE=binary/window/Exporter
 
-all: binary/linux_x86_64/Exporter
-	binary/linux_x86_64/Exporter ../src/shaders/candles.frag.spv model.gltf
+all: $(EXE) 
+	$(EXE) ../src/shaders/candles.vert.spv model.gltf
 	
-Exporter: Exporter.o
+$(EXE): Exporter.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 Exporter.o: Exporter.cpp Exporter.h
