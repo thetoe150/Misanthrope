@@ -1,17 +1,19 @@
 CC=g++
-CFLAGS=-I./ -I../extern/ -ggdb -DDEBUG
-LDFLAGS=
-EXE=binary/window/Exporter
+CFLAGS=-I./ -I../extern/ -I../extern/backward/include -ggdb -DDEBUG
+LDFLAGS=-ldw
+EXE=bin/linux_x86_64/Exporter
 
 all: $(EXE) 
-	$(EXE) ../src/shaders/candles.vert.spv model.gltf
+	$(EXE) ../src/shaders/candles.vert.spv ../src/shaders/candles.frag.spv
 	
-$(EXE): Exporter.o
+$(EXE): Exporter.o backward.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 Exporter.o: Exporter.cpp Exporter.h
 	$(CC) -c $< -o $@ $(CFLAGS)
 
+backward.o: ../extern/backward/src/backward.cpp
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 
 

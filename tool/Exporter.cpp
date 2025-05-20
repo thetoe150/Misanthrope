@@ -37,17 +37,24 @@ void testRapidJson() {
 
 int main(int argc, char** argv) {
 	assert(argc == 3);
-	testRapidJson();
-	return 0;
 
-	const char* shaderPath = argv[1];
-	FILE *file = fopen(shaderPath, "rb");
-	uint32_t spvBlob[2048];
-	size_t spvSize = fread(spvBlob, sizeof(uint32_t), 2048, file);
-	printf("input shader path: %s, with size: %i\n", shaderPath, spvSize);
-	Reflection ref = retrieveReflection(spvBlob, spvSize);
+	const char* vertexPath = argv[2];
+	FILE *file = fopen(vertexPath, "rb");
+	uint32_t vsSpvBlob[2048];
+	uint32_t vsSpvSize = fread(vsSpvBlob, sizeof(uint32_t), 2048, file);
+	printf("vertex shader path: %s, with size: %i\n", vertexPath, vsSpvSize);
+	Reflection vsReflection = retrieveReflection(vsSpvBlob, vsSpvSize);
 	fclose(file);
-	printReflection(ref);
+	printReflection(vsReflection);
+
+	const char* fragmentPath = argv[1];
+	file = fopen(fragmentPath, "rb");
+	uint32_t fsSpvBlob[2048];
+	uint32_t fsSpvSize = fread(fsSpvBlob, sizeof(uint32_t), 2048, file);
+	printf("fragment shader path: %s, with size: %i\n", fragmentPath, fsSpvSize);
+	Reflection fsRef = retrieveReflection(fsSpvBlob, fsSpvSize);
+	fclose(file);
+	printReflection(fsRef);
 
 	return 0;
 }
@@ -223,13 +230,13 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 void printReflection(const Reflection& reflection) {
 	printf("Descriptor Set Count %i\n", reflection.descriptorSetCount);
 
-	printf("\nLocation Count %i\n", reflection.locationCount);
+	printf("Location Count %i\n", reflection.locationCount);
 	for(unsigned int i = 0; i < reflection.locationCount; i++) {
 		const Location& loc = reflection.locations[i];
 		printf("At location %i of %s, named %s, type %i (id %i)\n", loc.location, loc.isInput == 1 ? "input" : "output", loc.name.c_str(), loc.type, loc.id);
 	}
 
-	printf("\nBinding Count %i\n", reflection.bindingCount);
+	printf("Binding Count %i\n", reflection.bindingCount);
 	for(unsigned int i = 0; i < reflection.bindingCount; i++) {
 		const Binding& bin = reflection.bindings[i];
 		printf("At binding %i of set %i, named %s, type %i (id %i)\n", bin.binding, bin.set, bin.name.c_str(), bin.type, bin.id);

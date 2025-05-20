@@ -56,7 +56,7 @@ do
 			export VK_LOADER_LAYERS_ENABLE=renderdoc_capture
 			cmd="~/renderdoc_1.36/bin/qrenderdoc";;
 		"-c") 
-			cd build/MonoVulkan
+			cd build/Misanthrope
 			make
 			cd ../..;;
 		"-l")

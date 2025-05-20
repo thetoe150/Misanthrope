@@ -1,7 +1,7 @@
 [
 	{
 		"directory": "/home/eanigmal/Code/Projects/Misanthrope/tool",
-		"arguments": ["g++", "-std=c++17", "-I../extern/"],
+		"arguments": ["g++", "-std=c++17", "-I../extern/", "-I../extern/backward/include"],
 		"file": "src/MonoVulkan.cpp"
 	}
 ]
