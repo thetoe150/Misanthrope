@@ -92,6 +92,9 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 		uint16_t opCode = ((uint16_t*)spvBlob)[w * 2];
 		uint16_t wordCount = ((uint16_t*)spvBlob)[w * 2 + 1];
 		switch(opCode) {
+			case SpvOpEntryPoint: {
+				break;
+			}
 			case SpvOpName: {
 				std::string name;
 				for (size_t i = (w+2)*4, n = (w + wordCount)*4; i < n; i++) {
@@ -152,32 +155,43 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 				uint32_t storageClass = spvBlob[w+3];
 				uint32_t pointerType = spvBlob[w+1];
 				if (storageClass == SpvStorageClassInput || storageClass == SpvStorageClassOutput) {
-					bool first = true;
+					bool found = false;
 					uint32_t id = spvBlob[w+2];
 					unsigned int it = 0;
 					for(; it < reflection.locationCount; it++) {
 						if (reflection.locations[it].id == id) {
-							first = false;
+							found = true;
 							break;
 						}
 					}
-					assert(first == false);
+					if (found == false){
+						reflection.locationCount++;
+						reflection.locations[it].id = id;
+						printf("WARNING: this id for vertex location variable %i seem to have no name\n", id);
+					}
+
 					if (storageClass == SpvStorageClassInput)
 						reflection.locations[it].isInput = true;
 
+					// at OpVariable the SpvOpTypePointer should already called
 					reflection.locations[it].type = types[pointerToType[pointerType]];
 				}
 				else if (storageClass == SpvStorageClassUniformConstant || storageClass == SpvStorageClassUniform){ // for binding
-					bool first = true;
+					bool found = false;
 					uint32_t id = spvBlob[w+2];
 					unsigned int it = 0;
 					for(; it < reflection.bindingCount; it++) {
 						if (reflection.bindings[it].id == id) {
-							first = false;
+							found = true;
 							break;
 						}
 					}
-					assert(first == false);
+					if (found == false){
+						reflection.locationCount++;
+						reflection.locations[it].id = id;
+						printf("WARNING: this id for descriptor binding variable %i seem to have no name\n", id);
+					}
+
 					if (storageClass == SpvStorageClassUniformConstant)
 						reflection.bindings[it].type = Descriptor::SAMPLER;
 					else if (storageClass == SpvStorageClassUniform)

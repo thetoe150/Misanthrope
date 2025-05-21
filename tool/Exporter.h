@@ -5,7 +5,7 @@
 
 #define MAX_DESCRIPTOR_SET 4
 #define MAX_BINDING 5
-#define MAX_LOCALTION 10
+#define MAX_LOCALTION 20
 #define MAX_PUSH_CONSTANT 3
 
 enum class Primitive {
