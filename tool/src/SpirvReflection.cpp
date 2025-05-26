@@ -4,10 +4,27 @@
 #include "spirv/unified1/spirv.h"
 #include "SpirvReflection.h"
 
-Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
+Semantic getLocationSemanticByName(std::string& name) {
+	if (name.find("position") != std::string::npos) 
+		return Semantic::POSITION;
+	if (name.find("normal") != std::string::npos) 
+		return Semantic::NORMAL;
+	if (name.find("tangent") != std::string::npos) 
+		return Semantic::TANGENT;
+	if (name.find("texCoord") != std::string::npos) 
+		return Semantic::TEXCOORD_0;
+
+	return Semantic::COUNT;
+}
+
+Semantic getBindingSemanticByName(std::string& name) {
+	return Semantic::COUNT;
+}
+
+Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 	Reflection reflection;
 	std::map<uint32_t, std::string> names;
-	std::map<uint32_t, Primitive> types;
+	std::map<uint32_t, Type> types;
 	std::map<uint32_t, uint32_t> pointerToType;
 
 	uint32_t w = 0;
@@ -63,12 +80,14 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 					l.id = spvBlob[w+1];
 					l.location = (uint8_t)spvBlob[w+3];
 					l.name = names[l.id];
+					l.semantic = getLocationSemanticByName(l.name);
 					reflection.locationCount++;
 				}
 				else if (decorate == SpvDecorationBinding || decorate == SpvDecorationDescriptorSet) {
 					bool first = true;
 					uint32_t id = spvBlob[w+1];
 					unsigned int it = 0;
+					// check to avoid duplicate, an id will have both Binding + Descriptor Set Decoration
 					for(; it < reflection.bindingCount; it++) {
 						if (reflection.bindings[it].id == id) {
 							first = false;
@@ -80,6 +99,8 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 						b.id = id;
 						// can do this because All OpName ops are called before all OpDecorate ops
 						b.name = names[b.id];
+						b.semantic = getBindingSemanticByName(b.name);
+
 						reflection.bindingCount++;
 					}
 
@@ -162,11 +183,11 @@ Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize) {
 			case SpvOpTypeVector: {
 				uint32_t count = spvBlob[w+3];
 				if (count == 2)
-					types.emplace(spvBlob[w+1], Primitive::F2);
+					types.emplace(spvBlob[w+1], Type::F2);
 				else if (count == 3)
-					types.emplace(spvBlob[w+1], Primitive::F3);
+					types.emplace(spvBlob[w+1], Type::F3);
 				else if (count == 4)
-					types.emplace(spvBlob[w+1], Primitive::F4);
+					types.emplace(spvBlob[w+1], Type::F4);
 
 				break;
 			}
@@ -192,12 +213,12 @@ void printReflection(const Reflection& reflection) {
 	printf("Location Count %i\n", reflection.locationCount);
 	for(unsigned int i = 0; i < reflection.locationCount; i++) {
 		const Location& loc = reflection.locations[i];
-		printf("At location %i of %s, named %s, type %i (id %i)\n", loc.location, loc.isInput == 1 ? "input" : "output", loc.name.c_str(), loc.type, loc.id);
+		printf("At location %i of %s, named %s, semantic %i, type %i (id %i)\n", loc.location, loc.isInput == 1 ? "input" : "output", loc.name.c_str(), loc.semantic, loc.type, loc.id);
 	}
 
 	printf("Binding Count %i\n", reflection.bindingCount);
 	for(unsigned int i = 0; i < reflection.bindingCount; i++) {
 		const Binding& bin = reflection.bindings[i];
-		printf("At binding %i of set %i, named %s, type %i (id %i)\n", bin.binding, bin.set, bin.name.c_str(), bin.type, bin.id);
+		printf("At binding %i of set %i, named %s, semantic %i, type %i (id %i)\n", bin.binding, bin.set, bin.name.c_str(), bin.semantic, bin.type, bin.id);
 	}
 }

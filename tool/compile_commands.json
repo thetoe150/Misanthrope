@@ -1,6 +1,6 @@
 [
 	{
-		"directory": "/home/eanigmal/Code/Projects/Misanthrope/tool",
+		"directory": "D:/PP/Misanthrope/tool/compile_commands.json",
 		"arguments": ["g++", "-std=c++17", "-I../extern/", "-I../extern/backward/include", "-I./include/"],
 		"file": "src/MonoVulkan.cpp"
 	}

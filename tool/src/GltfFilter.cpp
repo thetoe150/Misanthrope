@@ -26,3 +26,20 @@ void testRapidJson() {
 	doc.Accept(writer);
 	printf("output string: %s\n", buffer.GetString());
 }
+
+void filterGltf(uint8_t* jsonBlob, uint32_t jsonLength, uint8_t* gltfBlob, uint32_t gltfSize) {
+
+	rapidjson::MemoryStream ms((char*)jsonBlob, jsonLength);
+	rapidjson::Document doc;
+    rapidjson::ParseResult result = doc.ParseStream(ms);
+    if (!result) {
+        printf("JSON parse error: %s (at offset %llu)\n", rapidjson::GetParseError_En(result.Code()), result.Offset()); 
+    }
+
+	rapidjson::StringBuffer buffer; 
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    writer.SetIndent(' ', 4); // 4 spaces
+    writer.SetFormatOptions( rapidjson::kFormatDefault);
+	doc.Accept(writer);
+	printf("output string: %s\n", buffer.GetString());
+}

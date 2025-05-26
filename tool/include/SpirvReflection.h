@@ -6,7 +6,7 @@
 #define MAX_LOCALTION 20
 #define MAX_PUSH_CONSTANT 3
 
-enum class Primitive {
+enum class Type {
 	I = 0,
 	F,
 	F2,
@@ -25,6 +25,8 @@ enum class Semantic {
 	TEXCOORD_0,
 	TEXCOORD_1,
 	TEXCOORD_2,
+
+	COUNT
 };
 
 enum class Descriptor {
@@ -38,7 +40,8 @@ enum class Descriptor {
 struct Location {
 	uint32_t id;
 	std::string name;
-	Primitive type;
+	Semantic semantic;
+	Type type;
 	uint8_t location;
 	bool isInput;
 };
@@ -46,6 +49,7 @@ struct Location {
 struct Binding {
 	uint32_t id;
 	std::string name;
+	Semantic semantic;
 	Descriptor type;
 	uint8_t binding;
 	uint8_t set;
@@ -54,7 +58,7 @@ struct Binding {
 struct PushConstant {
 	uint32_t id;
 	std::string name;
-	Primitive type;
+	Type type;
 	uint8_t size;
 };
 
@@ -68,5 +72,5 @@ struct Reflection {
 	PushConstant pushConstants[MAX_PUSH_CONSTANT];
 };
 
-Reflection retrieveReflection(const uint32_t* spvBlob, uint32_t spvSize);
+Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize);
 void printReflection(const Reflection& reflection);
