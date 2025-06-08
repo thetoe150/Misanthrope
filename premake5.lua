@@ -39,7 +39,7 @@ project "Misanthrope"
 	includedirs {"extern/GLFW/include/", "extern/backward/include/", "extern/imgui/include/", "extern/meshoptimizer/include/", "extern/spirv_reflect/include/"}
 	-- header only libs
 	includedirs {"extern/", "src/", "extern/tracy/public/tracy"}
-	files {"src/Misanthrope.cpp"}
+	files {"src/**.cpp"}
 	files {"extern/tracy/public/TracyClient.cpp"}
 
 	defines {"TRACY_ENABLE", "TRACY_VK_USE_SYMBOL_TABLE", "ENABLE_OPTIMIZE_MESH"}
