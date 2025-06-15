@@ -27,6 +27,9 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 	std::map<uint32_t, Type> types;
 	std::map<uint32_t, uint32_t> pointerToType;
 
+	Binding cacheBinding[MAX_DESCRIPTOR_SET * MAX_BINDING];
+	uint8_t bindingCacheCount{0};
+
 	uint32_t w = 0;
 	while(w < spvSize){
 		if(w == 0) {
@@ -88,35 +91,87 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 					uint32_t id = spvBlob[w+1];
 					unsigned int it = 0;
 					// check to avoid duplicate, an id will have both Binding + Descriptor Set Decoration
-					for(; it < reflection.bindingCount; it++) {
-						if (reflection.bindings[it].id == id) {
+					for(; it < bindingCacheCount; it++) {
+						if (cacheBinding[it].id == id) {
 							first = false;
 							break;
 						}
 					}
-					Binding& b = reflection.bindings[it];
+					Binding& b = cacheBinding[it];
 					if (first) {
 						b.id = id;
-						// can do this because All OpName ops are called before all OpDecorate ops
+						assert(names.find(b.id) != names.end() && "This id have no name or OpName is called late");
 						b.name = names[b.id];
-						b.semantic = getBindingSemanticByName(b.name);
 
-						reflection.bindingCount++;
+						bindingCacheCount++;
 					}
 
-					if (decorate == SpvDecorationBinding)
-						b.binding = (uint8_t)spvBlob[w+3];
+					if (decorate == SpvDecorationBinding) {
+						b.bindingIdx = (uint8_t)spvBlob[w+3];
+					}
 					else if (decorate == SpvDecorationDescriptorSet){
-						b.set = (uint8_t)spvBlob[w+3];
-						reflection.descriptorSetCount = b.set > reflection.descriptorSetCount ? b.set : reflection.descriptorSetCount;
+						b.setIdx = (uint8_t)spvBlob[w+3];
+						reflection.descriptorSetCount = b.setIdx + 1 > reflection.descriptorSetCount ? b.setIdx + 1 : reflection.descriptorSetCount;
 					}
 
+					if (b.setIdx != -1 && b.bindingIdx != -1) {
+						reflection.descriptorSets[b.setIdx].bindings[reflection.descriptorSets[b.setIdx].bindingCount++] = b;
+						reflection.totalBindingCount++;
+					}
 				}
 				else if (decorate == SpvDecorationBlock) {
+				}
+				else if (decorate == SpvDecorationBufferBlock) {
 				}
 
 				break;
 			}
+			case SpvOpTypeArray: {
+				break;
+			}
+			case SpvOpTypeRuntimeArray: {
+				break;
+			}
+			case SpvOpTypeStruct: {
+				for (uint16_t i = 2; i < wordCount; i++) {
+					if(types.find(spvBlob[i]) != types.end()) {
+						Block& block = reflection.blocks[reflection.blockCount++];
+					}
+				}
+				break;
+			}
+			case SpvOpTypeVector: {
+				uint32_t count = spvBlob[w+3];
+				if (count == 2)
+					types.emplace(spvBlob[w+1], Type::F2);
+				else if (count == 3)
+					types.emplace(spvBlob[w+1], Type::F3);
+				else if (count == 4)
+					types.emplace(spvBlob[w+1], Type::F4);
+
+				break;
+			}
+			case SpvOpTypeMatrix: {
+				uint32_t count = spvBlob[w+3];
+				// HACK: assume it's a vector of float
+				if (count == 3)
+					types.emplace(spvBlob[w+1], Type::F3x3);
+				else if (count == 4)
+					types.emplace(spvBlob[w+1], Type::F4x4);
+
+				break;
+			}
+			case SpvOpTypeSampledImage: {
+				break;
+			}
+			case SpvOpTypePointer: {
+				// the type for the pointer allready declare for this type
+				uint32_t storageClass = spvBlob[w+2];
+				if (storageClass == SpvStorageClassInput || storageClass == SpvStorageClassOutput)
+					pointerToType.emplace(spvBlob[w+1], spvBlob[w+3]);
+				break;
+			}
+
 			case SpvOpVariable: {
 				uint32_t storageClass = spvBlob[w+3];
 				uint32_t pointerType = spvBlob[w+1];
@@ -143,25 +198,28 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 					reflection.locations[it].type = types[pointerToType[pointerType]];
 				}
 				else if (storageClass == SpvStorageClassUniformConstant || storageClass == SpvStorageClassUniform){ // for binding
-					bool found = false;
 					uint32_t id = spvBlob[w+2];
-					unsigned int it = 0;
-					for(; it < reflection.bindingCount; it++) {
-						if (reflection.bindings[it].id == id) {
-							found = true;
-							break;
+					bool found = false;
+					unsigned int setIt = 0;
+					unsigned int bindingIt = 0;
+					unsigned int globalBindingIdx = 0;
+					for(; setIt < reflection.descriptorSetCount; setIt++) {
+						for(; bindingIt < reflection.descriptorSetCount; bindingIt++) {
+							if (reflection.descriptorSets[setIt].bindings[bindingIt].id == id) {
+								globalBindingIdx = reflection.descriptorSets[setIt].bindings[bindingIt].bindingIdx;
+								found = true;
+								break;
+							}
 						}
 					}
 					if (found == false){
-						reflection.locationCount++;
-						reflection.locations[it].id = id;
-						printf("WARNING: this id for descriptor binding variable %i seem to have no name\n", id);
+						printf("WARNING: type id %i cann't found for variable \n", id);
 					}
 
 					if (storageClass == SpvStorageClassUniformConstant)
-						reflection.bindings[it].type = Descriptor::SAMPLER;
+						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = Descriptor::SAMPLER;
 					else if (storageClass == SpvStorageClassUniform)
-						reflection.bindings[it].type = Descriptor::UNIFORM;
+						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = Descriptor::UNIFORM;
 
 					// push constant don't have decoration for it
 					// else if (storageClass == uint32_t(9))
@@ -170,55 +228,27 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 
 				break;
 			}
-			case SpvOpTypePointer: {
-				// the type for the pointer allready declare for this type
-				uint32_t storageClass = spvBlob[w+2];
-				if (storageClass == SpvStorageClassInput || storageClass == SpvStorageClassOutput)
-					pointerToType.emplace(spvBlob[w+1], spvBlob[w+3]);
-				break;
-			}
-			case SpvOpTypeStruct: {
-				break;
-			}
-			case SpvOpTypeVector: {
-				uint32_t count = spvBlob[w+3];
-				if (count == 2)
-					types.emplace(spvBlob[w+1], Type::F2);
-				else if (count == 3)
-					types.emplace(spvBlob[w+1], Type::F3);
-				else if (count == 4)
-					types.emplace(spvBlob[w+1], Type::F4);
-
-				break;
-			}
-			case SpvOpTypeMatrix: {
-				break;
-			}
-			case SpvOpTypeSampledImage: {
-				break;
-			}
 		}
 
 		w += wordCount;
 	}
-	// count = max + 1
-	reflection.descriptorSetCount += 1;
 
 	return reflection;
 }
 
 void printReflection(const Reflection& reflection) {
-	printf("Descriptor Set Count %i\n", reflection.descriptorSetCount);
-
 	printf("Location Count %i\n", reflection.locationCount);
 	for(unsigned int i = 0; i < reflection.locationCount; i++) {
 		const Location& loc = reflection.locations[i];
 		printf("At location %i of %s, named %s, semantic %i, type %i (id %i)\n", loc.location, loc.isInput == 1 ? "input" : "output", loc.name.c_str(), loc.semantic, loc.type, loc.id);
 	}
 
-	printf("Binding Count %i\n", reflection.bindingCount);
-	for(unsigned int i = 0; i < reflection.bindingCount; i++) {
-		const Binding& bin = reflection.bindings[i];
-		printf("At binding %i of set %i, named %s, semantic %i, type %i (id %i)\n", bin.binding, bin.set, bin.name.c_str(), bin.semantic, bin.type, bin.id);
+	printf("Descriptor Set Count %i\n", reflection.descriptorSetCount);
+	printf("Binding Count %i\n", reflection.totalBindingCount);
+	for(unsigned int i = 0; i < reflection.descriptorSetCount; i++) {
+		for(unsigned int j = 0; j < reflection.descriptorSets[i].bindingCount; j++) {
+			const Binding& bin = reflection.descriptorSets[i].bindings[j];
+			printf("At binding %i of set %i, named %s, semantic %i, type %i (id %i)\n", bin.bindingIdx, bin.setIdx, bin.name.c_str(), bin.semantic, bin.type, bin.id);
+		}
 	}
 }

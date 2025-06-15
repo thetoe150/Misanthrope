@@ -20,11 +20,11 @@ layout (push_constant) uniform DataPushConstant{
 	float deltaTime;
 } p_const;
 
-layout (std140, binding = 0) buffer inputSnowflakeStorageBuffer{
+layout (std430, binding = 0) buffer inputSnowflakeStorageBuffer{
 	Snowflake s_inputSnowflakes[ ];
 };
 
-layout (std140, binding = 1) buffer outputSnowflakeStorageBuffer{
+layout (std430, binding = 1) buffer outputSnowflakeStorageBuffer{
 	Snowflake s_outputSnowflakes[ ];
 };
 

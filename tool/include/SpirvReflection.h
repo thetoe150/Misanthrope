@@ -5,6 +5,8 @@
 #define MAX_BINDING 5
 #define MAX_LOCALTION 20
 #define MAX_PUSH_CONSTANT 3
+#define MAX_BUFFER 8
+#define MAX_MEMBER 8
 
 enum class Type {
 	I = 0,
@@ -15,6 +17,8 @@ enum class Type {
 	F3x3,
 	F4x4,
 	STRUCT,
+
+	COUNT,
 };
 
 enum class Semantic {
@@ -34,7 +38,8 @@ enum class Descriptor {
 	// DYNAMIC_UNIFORM???,
 	// STORAGE???,
 	// PUSH_CONSTANT,
-	SAMPLER
+	SAMPLER,
+	COUNT,
 };
 
 struct Location {
@@ -49,10 +54,9 @@ struct Location {
 struct Binding {
 	uint32_t id;
 	std::string name;
-	Semantic semantic;
-	Descriptor type;
-	uint8_t binding;
-	uint8_t set;
+	Descriptor type{Descriptor::COUNT};
+	int8_t bindingIdx{-1};
+	int8_t setIdx{-1};
 };
 
 struct PushConstant {
@@ -62,14 +66,49 @@ struct PushConstant {
 	uint8_t size;
 };
 
-struct Reflection {
-	uint8_t descriptorSetCount{0};
-	uint8_t locationCount{0};
-	Location locations[MAX_LOCALTION];
+struct DescriptorSet {
 	uint8_t bindingCount{0};
 	Binding bindings[MAX_BINDING];
+};
+
+struct BlockMember {
+	std::string name;
+	Type type;
+	uint8_t offset;
+};
+
+struct Block {
+	uint8_t memberCount{0};
+	BlockMember members[MAX_MEMBER];
+	uint8_t arraySize;
+	bool isRuntimeArray;
+	uint8_t stride;
+
+	uint8_t setIdx;
+	uint8_t bindingIdx;
+};
+
+struct Sampler {
+	uint8_t setIdx;
+	uint8_t bindingIdx;
+};
+
+struct Reflection {
+	uint8_t locationCount{0};
+	Location locations[MAX_LOCALTION];
+
+	uint8_t descriptorSetCount{0};
+	DescriptorSet descriptorSets[MAX_DESCRIPTOR_SET];
+	uint8_t totalBindingCount{0};
+
 	uint8_t pushConstantCount{0};
 	PushConstant pushConstants[MAX_PUSH_CONSTANT];
+
+	uint8_t blockCount{0};
+	Block blocks[MAX_BUFFER];
+
+	uint8_t samplerCount{0};
+	Sampler sampler[MAX_BUFFER];
 };
 
 Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize);

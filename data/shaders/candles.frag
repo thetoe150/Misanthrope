@@ -1,14 +1,14 @@
 #version 450
 
-layout(set = 0, binding = 1) uniform CandlesLightingTransform {
+layout(set = 0, binding = 0) uniform CandlesLightingTransform {
     mat4 viewProj;
     vec3 lightPos;
     vec3 camPos;
 } u_lightingTransform;
 
-layout(set = 1, binding = 2) uniform sampler2D u_texSampler;
-layout(set = 1, binding = 3) uniform sampler2D u_normalSampler;
-layout(set = 1, binding = 4) uniform sampler2D u_emissiveSampler;
+layout(set = 1, binding = 1) uniform sampler2D u_texSampler;
+layout(set = 1, binding = 2) uniform sampler2D u_normalSampler;
+layout(set = 1, binding = 3) uniform sampler2D u_emissiveSampler;
 
 layout(location = 0) in vec2 v_fragTexCoord;
 layout(location = 1) in vec3 v_tangentFragPos;

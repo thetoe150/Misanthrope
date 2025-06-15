@@ -65,44 +65,44 @@ std::array<Blob, 2> parseGlb(const char* glbPath) {
 int main(int argc, char** argv) {
 	Reflection reflection = combineReflection(argv[1], argv[2]);
 
-	std::array<Blob, 2> blobs;
-	if (argc == 4) {
-		blobs = parseGlb(argv[3]);
-	}
-	else if (argc == 5) {
-		const char* gltfJsonPath = argv[3];
-		FILE* file = fopen(gltfJsonPath, "rb");
-		if (file == nullptr) {
-			printf("Error occur opening gltf json file %s", gltfJsonPath);
-			return 1;
-		}
-		Blob jsonBlob(1024 * 1024 * 64);
-		uint32_t jsonWordSize = fread(jsonBlob.blob, sizeof(uint32_t), jsonBlob.size / sizeof(uint32_t), file);
-		jsonBlob.size = jsonWordSize * 4;
-		jsonBlob.fit();
-		printf("\ngltf json path: %s, with size: %i\n", gltfJsonPath, jsonBlob.size);
-		fclose(file);
+	// std::array<Blob, 2> blobs;
+	// if (argc == 4) {
+	// 	blobs = parseGlb(argv[3]);
+	// }
+	// else if (argc == 5) {
+	// 	const char* gltfJsonPath = argv[3];
+	// 	FILE* file = fopen(gltfJsonPath, "rb");
+	// 	if (file == nullptr) {
+	// 		printf("Error occur opening gltf json file %s", gltfJsonPath);
+	// 		return 1;
+	// 	}
+	// 	Blob jsonBlob(1024 * 1024 * 64);
+	// 	uint32_t jsonWordSize = fread(jsonBlob.blob, sizeof(uint32_t), jsonBlob.size / sizeof(uint32_t), file);
+	// 	jsonBlob.size = jsonWordSize * 4;
+	// 	jsonBlob.fit();
+	// 	printf("\ngltf json path: %s, with size: %i\n", gltfJsonPath, jsonBlob.size);
+	// 	fclose(file);
 
-		const char* gltfBinPath = argv[4];
-		FILE* binaryFile = fopen(gltfBinPath, "rb");
-		if (binaryFile == nullptr) {
-			printf("Error occur opening gltf binary file %s", gltfBinPath);
-			return 1;
-		}
-		Blob binaryBlob(1024 * 1024 * 256);
-		uint32_t binaryWordSize = fread(binaryBlob.blob, sizeof(uint32_t), binaryBlob.size / sizeof(uint32_t), binaryFile);
-		binaryBlob.size = binaryWordSize * 4;
-		binaryBlob.fit();
-		printf("gltf json path: %s, with size: %i\n", gltfBinPath, binaryBlob.size);
-		fclose(binaryFile);
-		blobs[0] = std::move(jsonBlob);
-		blobs[1] = std::move(binaryBlob);
-	}
-	else {
-		assert(false && "invalid number of argument");
-	}
+	// 	const char* gltfBinPath = argv[4];
+	// 	FILE* binaryFile = fopen(gltfBinPath, "rb");
+	// 	if (binaryFile == nullptr) {
+	// 		printf("Error occur opening gltf binary file %s", gltfBinPath);
+	// 		return 1;
+	// 	}
+	// 	Blob binaryBlob(1024 * 1024 * 256);
+	// 	uint32_t binaryWordSize = fread(binaryBlob.blob, sizeof(uint32_t), binaryBlob.size / sizeof(uint32_t), binaryFile);
+	// 	binaryBlob.size = binaryWordSize * 4;
+	// 	binaryBlob.fit();
+	// 	printf("gltf json path: %s, with size: %i\n", gltfBinPath, binaryBlob.size);
+	// 	fclose(binaryFile);
+	// 	blobs[0] = std::move(jsonBlob);
+	// 	blobs[1] = std::move(binaryBlob);
+	// }
+	// else {
+	// 	assert(false && "invalid number of argument");
+	// }
 
-	filterGltf(blobs[0].blob, blobs[0].size, blobs[1].blob, blobs[1].size);
+	// filterGltf(blobs[0].blob, blobs[0].size, blobs[1].blob, blobs[1].size);
 
 	return 0;
 }
