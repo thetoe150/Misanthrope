@@ -9,3 +9,5 @@
 /compile_commands.json
 /tool/build/
 /tool/bin/
+.clangd
+tool/.clangd
