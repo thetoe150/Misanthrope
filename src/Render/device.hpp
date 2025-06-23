@@ -2,6 +2,7 @@
 #include "vulkan/vulkan.hpp"
 #include "GLFW/include/glfw3.h"
 #include "optional"
+#include "memory"
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;

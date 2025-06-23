@@ -16,7 +16,14 @@ enum class Type {
 	F4,
 	F3x3,
 	F4x4,
+
+	COUNT,
+};
+
+enum class BlockType {
 	STRUCT,
+	ARRAY_OF_STRUCT,
+	RUNTIME_ARRAY_OF_STRUCT,
 
 	COUNT,
 };
@@ -78,10 +85,11 @@ struct BlockMember {
 };
 
 struct Block {
+	uint32_t id;
 	uint8_t memberCount{0};
 	BlockMember members[MAX_MEMBER];
-	uint8_t arraySize;
-	bool isRuntimeArray;
+	BlockType type;
+	uint32_t arraySize;
 	uint8_t stride;
 
 	uint8_t setIdx;

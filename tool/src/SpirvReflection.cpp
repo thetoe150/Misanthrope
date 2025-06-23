@@ -133,9 +133,19 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 				break;
 			}
 			case SpvOpTypeStruct: {
+				uint16_t idx = 0;
+				bool found = false;
+				for (; idx < reflection.blockCount; idx++) {
+					if(spvBlob[1] == reflection.blocks[idx].id) {
+						found = true;
+						break;
+					}
+				}
+				assert(found && "Can't found block");
+				Block& block = reflection.blocks[idx];
 				for (uint16_t i = 2; i < wordCount; i++) {
 					if(types.find(spvBlob[i]) != types.end()) {
-						Block& block = reflection.blocks[reflection.blockCount++];
+						block.members[i-2].type = ;
 					}
 				}
 				break;
@@ -248,7 +258,7 @@ void printReflection(const Reflection& reflection) {
 	for(unsigned int i = 0; i < reflection.descriptorSetCount; i++) {
 		for(unsigned int j = 0; j < reflection.descriptorSets[i].bindingCount; j++) {
 			const Binding& bin = reflection.descriptorSets[i].bindings[j];
-			printf("At binding %i of set %i, named %s, semantic %i, type %i (id %i)\n", bin.bindingIdx, bin.setIdx, bin.name.c_str(), bin.semantic, bin.type, bin.id);
+			printf("At binding %i of set %i, named %s, type %i (id %i)\n", bin.bindingIdx, bin.setIdx, bin.name.c_str(), bin.type, bin.id);
 		}
 	}
 }
