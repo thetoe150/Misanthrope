@@ -3,6 +3,7 @@
 #include "material.hpp"
 #include "mesh.hpp"
 #include "model.hpp"
+#include "shader.hpp"
 
 struct {
 	Shader snowflakeVS;
@@ -27,6 +28,14 @@ struct {
 } m_shaders;
 
 class Scene {
+private:
+	ModelLoader m_modelLoader;
+	MeshLoader m_meshLoader;
+	MaterialLoader m_materialLoader;
+	ShaderLoader m_shaderLoader;
+
+	View m_view;
+	ShadowView m_shadowView;
 public:
 	void loadModels();
 	void loadShaders();

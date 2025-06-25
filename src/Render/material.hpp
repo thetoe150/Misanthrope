@@ -1,7 +1,7 @@
 #include <unordered_map>
 #include <string>
 #include "vulkan/vulkan.h"
-#include "vma/vk_mem_alloc.h"
+#include "allocator.hpp"
 
 #include "cgltf/cgltf.h"
 
@@ -11,8 +11,7 @@ struct IMaterial {
 };
 
 struct StandardMaterial : IMaterial {
-	std::unordered_map<std::string, cgltf_texture> textures;   // Texture slots by name
-	std::unordered_map<std::string, float> floatParams;   // Float uniforms (e.g., metallic, roughness)
+	std::unordered_map<std::string, cgltf_material> materialMeta;
 };
 
 struct ShadowMaterial : IMaterial {
@@ -31,5 +30,5 @@ typedef struct {
 } MeshImages;
 
 class MaterialLoader {
-
+	
 };

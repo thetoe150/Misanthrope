@@ -34,8 +34,6 @@ class ModelLoader {
 public:
 	ModelLoader();
 private:
-	MeshLoader meshLoader;
-	MaterialLoader materialLoader;
 	std::vector<std::string> meshNames;
 	std::vector<std::string> materialNames;
 };

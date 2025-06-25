@@ -7,24 +7,36 @@
 #include "allocator.hpp"
 #include "cgltf/cgltf.h"
 
-// manage model mesh and create runtime vk objects, 1 mesh / drawcall
-struct IMesh {
+// manage mesh data passed down from model and create runtime vk objects, 1 mesh / drawcall
+class IMesh {
+public:
+	virtual void Build() = 0;
+private:
 	Slot indexBuffer;
 	Slot vertexBuffer;
 };
 
-struct AnimatedMesh : IMesh {
+class AnimatedMesh : IMesh {
+public:
+	void Build() override;
+private:
 	std::shared_ptr<cgltf_mesh> meshMeta;
 	MemoryView mesh;
 	MemoryView morphTarget;
 };
 
-struct BatchedMesh : IMesh {
+class BatchedMesh : IMesh {
+public:
+	void Build() override;
+private:
 	std::vector<std::shared_ptr<cgltf_mesh>> meshMetas;
 	MemoryView mesh;
 };
 
-struct StandardMesh : IMesh {
+class StandardMesh : IMesh {
+public:
+	void Build() override;
+private:
 	std::shared_ptr<cgltf_mesh> meshMeta;
 	MemoryView mesh;
 };

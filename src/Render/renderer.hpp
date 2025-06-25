@@ -1,7 +1,7 @@
-#define VMA_IMPLEMENTATION
-#include "vma/vk_mem_alloc.h"
 #include "vulkan/vulkan.h"
 #include "vulkan/vulkan.hpp"
+
+#include "allocator.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -18,10 +18,6 @@
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
-
-#define TINYGLTF_IMPLEMENTATION
-#define TINYGLTF_NO_STB_IMAGE_WRITE
-#include <tiny_gltf/tiny_gltf.h>
 
 #include <spirv_reflect.h>
 #include <spirv_reflect_output.h>
@@ -328,6 +324,12 @@ inline std::array<VkPrimitiveTopology, 3> DynamicPrimitiveTopologies{
 float generateRandomFloat(float low, float high){
 	return low + (static_cast<float>(rand()) / (RAND_MAX / (high - low)));
 }
+
+class Drawcall {
+	Slot vertexBuffer;
+	Slot indexBuffer;
+	std::vector<VkImageView> images;
+};
 
 class Renderer {
 private:
