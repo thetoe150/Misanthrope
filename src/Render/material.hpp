@@ -1,3 +1,6 @@
+#ifndef MATERIAL_H 
+#define MATERIAL_H 
+
 #include <unordered_map>
 #include <string>
 #include "vulkan/vulkan.h"
@@ -5,16 +8,24 @@
 
 #include "cgltf/cgltf.h"
 
-struct IMaterial {
+// manage material data proccessed by model and create runtime vk objects, 1 mesh / drawcall
+// info from this class is used to create drawcall
+class IMaterial {
+public:
+private:
 	std::string name;
 	std::string fragmentShader;
 };
 
-struct StandardMaterial : IMaterial {
+class StandardMaterial : IMaterial {
+public:
+private:
 	std::unordered_map<std::string, cgltf_material> materialMeta;
 };
 
-struct ShadowMaterial : IMaterial {
+class ShadowMaterial : IMaterial {
+public:
+private:
 };
 
 typedef struct {
@@ -29,6 +40,9 @@ typedef struct {
 	Image emissiveImage;
 } MeshImages;
 
+// load material from file and provide them for models do processing
 class MaterialLoader {
 	
 };
+
+#endif//MATERIAL_H 

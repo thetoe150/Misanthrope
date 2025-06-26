@@ -1,3 +1,6 @@
+#ifndef MODEL_H
+#define MODEL_H
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -13,7 +16,7 @@ class IModel {
 
 class AnimatedModel : IModel {
 public:
-	void computeAnimation();
+	void computeAnimation(cgltf_data i_data);
 	std::vector<float> computeWeights(unsigned int meshIdx, float deltaTime);
 	void computeMorphTargets(unsigned int meshIdx, std::vector<float> weights);
 	void traverseModelNodesForTransform();
@@ -32,8 +35,11 @@ private:
 
 class ModelLoader {
 public:
-	ModelLoader();
+	ModelLoader(std::vector<std::string> names);
+	void LoadModels();
 private:
-	std::vector<std::string> meshNames;
-	std::vector<std::string> materialNames;
+	std::shared_ptr<cgltf_data> LoadModel(std::string);
+	std::vector<std::string> m_modelnames;
 };
+
+#endif//MODEL_H

@@ -1,3 +1,6 @@
+#ifndef SHADER_H
+#define SHADER_H 
+
 #include "vulkan/vulkan.h"
 #include <vector>
 #include <stdexcept>
@@ -20,3 +23,5 @@ public:
 private:
 	std::unordered_map<std::string, std::shared_ptr<MemoryView>> m_shaders;
 };
+
+#endif//SHADER_H 
