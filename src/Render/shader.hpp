@@ -19,6 +19,7 @@ VkShaderModule createShaderModule(VkDevice device, const std::vector<uint8_t>& c
 
 class ShaderLoader {
 public:
+	ShaderLoader();
 	void LoadShader();
 private:
 	std::unordered_map<std::string, std::shared_ptr<MemoryView>> m_shaders;

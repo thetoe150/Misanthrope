@@ -41,8 +41,9 @@ typedef struct {
 } MeshImages;
 
 // load material from file and provide them for models do processing
-class MaterialLoader {
-	
+class TextureLoader {
+public:	
+	TextureLoader();
 };
 
 #endif//MATERIAL_H 

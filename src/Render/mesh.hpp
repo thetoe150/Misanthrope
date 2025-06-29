@@ -16,7 +16,7 @@
 // info from this class is used to create drawcall
 class IMesh {
 public:
-	virtual void Build() = 0;
+	virtual void acquireGpuResource() = 0;
 private:
 	Slot indexBuffer;
 	Slot vertexBuffer;
@@ -24,7 +24,7 @@ private:
 
 class AnimatedMesh : IMesh {
 public:
-	void Build() override;
+	void acquireGpuResource() override;
 private:
 	std::shared_ptr<cgltf_mesh> meshMeta;
 	MemoryView mesh;
@@ -33,7 +33,7 @@ private:
 
 class BatchedMesh : IMesh {
 public:
-	void Build() override;
+	void acquireGpuResource() override;
 private:
 	std::vector<std::shared_ptr<cgltf_mesh>> meshMetas;
 	MemoryView mesh;
@@ -41,7 +41,7 @@ private:
 
 class InstancedMesh : IMesh {
 public:
-	void Build() override;
+	void acquireGpuResource() override;
 private:
 	std::shared_ptr<cgltf_mesh> meshMeta;
 	MemoryView mesh;
@@ -50,7 +50,7 @@ private:
 
 class BatchedInstancedMesh : IMesh {
 public:
-	void Build() override;
+	void acquireGpuResource() override;
 private:
 	std::vector<std::shared_ptr<cgltf_mesh>> meshMetas;
 	MemoryView mesh;
@@ -58,7 +58,7 @@ private:
 
 class StandardMesh : IMesh {
 public:
-	void Build() override;
+	void acquireGpuResource() override;
 private:
 	std::shared_ptr<cgltf_mesh> meshMeta;
 	MemoryView mesh;
@@ -66,13 +66,16 @@ private:
 
 // load meshes from files and provide them for models do processing
 class MeshLoader {
+public:
+	MeshLoader();
+	uint8_t loadMeshes(std::vector<cgltf_data*>);
+	cgltf_mesh ProvideMesh(std::string);
+private:
 	std::unordered_map<std::string, std::shared_ptr<cgltf_mesh>> meshMetas;
 	std::unordered_map<std::string, std::shared_ptr<MemoryView>> meshes;
-	cgltf_mesh ProvideMesh(std::string);
 };
 
 struct VertexInstance {
-	alignas(16) glm::vec3 pos;
 
 	static VkVertexInputBindingDescription getBindingDescription(){
 		VkVertexInputBindingDescription bindingDescription{};
@@ -92,10 +95,6 @@ struct VertexInstance {
 		attributeDescriptions[0].offset = 0;
 
 		return attributeDescriptions;
-	}
-
-	bool operator==(const VertexInstance& other) const{
-		return pos == other.pos;
 	}
 };
 

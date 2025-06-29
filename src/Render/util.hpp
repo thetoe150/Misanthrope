@@ -4,19 +4,22 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/hash.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+
+#include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
+#include "cgltf/cgltf.h"
 
 #include <cstdint>
+#include <optional>
 
 struct MemoryView {
-	void* data;
-	uint8_t size;
+	uint8_t* data{0};
+	uint32_t size{0};
 };
 
+std::optional<MemoryView> LoadFile(const char*);
+std::optional<rapidjson::Document> ParseJsonFile(const char* i_name);
+std::optional<cgltf_data*> ParseGltfFile(const char* i_name);
 
 #define CHECK_VK_RESULT(f, msg)																	\
 {																								\

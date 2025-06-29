@@ -1,0 +1,82 @@
+{
+	"models": [
+		{
+			"name": "snowflake",
+			"path": "snowflake",
+			"position": 
+			[
+				[ 1.0, 1.0, 1.0]
+			],
+			"meshes": 
+			[
+				{
+					"vsShader": [
+						""
+					],
+					"fsShader": [
+						"",
+						"",
+						"",
+						"",
+						""
+					],
+					"animation": true
+				}
+			],
+			"animation": false,
+			"instance": 1
+		},
+		{
+			"name": "candles",
+			"path": "candles",
+			"position": 
+			[
+				[ 1.0, -1.0, -1.0]
+			],
+			"meshes": 
+			[
+				{
+					"vsShader": [
+						""
+					],
+					"fsShader": [
+						"",
+						"",
+						"",
+						"",
+						""
+					],
+					"animation": true
+				},
+				{
+					"vsShader": [
+						""
+					],
+					"fsShader": [
+						"",
+						"",
+						"",
+						"",
+						""
+					],
+					"animation": false
+				},
+				{
+					"vsShader": [
+						""
+					],
+					"fsShader": [
+						"",
+						"",
+						"",
+						"",
+						""
+					],
+					"animation": true
+				}
+			],
+			"animation": true,
+			"instance": 1
+		}
+	]
+}
