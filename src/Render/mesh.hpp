@@ -14,15 +14,24 @@
 
 // manage mesh data proccessed by model and create runtime vk objects, 1 mesh / drawcall
 // info from this class is used to create drawcall
-class IMesh {
+class Mesh {
 public:
-	virtual void acquireGpuResource() = 0;
+	struct MeshDesc {
+		std::string name;
+		uint32_t meshCount;
+		uint32_t instanceCount;
+		bool isBlend;
+		bool isAnimated;
+	};
+	virtual void acquireGpuResource();
 private:
+	MeshDesc m_meshDesc;
+
 	Slot indexBuffer;
 	Slot vertexBuffer;
 };
 
-class AnimatedMesh : IMesh {
+class AnimatedMesh : Mesh {
 public:
 	void acquireGpuResource() override;
 private:
@@ -31,7 +40,7 @@ private:
 	MemoryView morphTarget;
 };
 
-class BatchedMesh : IMesh {
+class BatchedMesh : Mesh {
 public:
 	void acquireGpuResource() override;
 private:
@@ -39,7 +48,7 @@ private:
 	MemoryView mesh;
 };
 
-class InstancedMesh : IMesh {
+class InstancedMesh : Mesh {
 public:
 	void acquireGpuResource() override;
 private:
@@ -48,7 +57,7 @@ private:
 	MemoryView instanceData;
 };
 
-class BatchedInstancedMesh : IMesh {
+class BatchedInstancedMesh : Mesh {
 public:
 	void acquireGpuResource() override;
 private:
@@ -56,7 +65,7 @@ private:
 	MemoryView mesh;
 };
 
-class StandardMesh : IMesh {
+class StandardMesh : Mesh {
 public:
 	void acquireGpuResource() override;
 private:

@@ -12,20 +12,34 @@
 #include "material.hpp"
 #include "global.hpp"
 
-class IModel {
+class Model {
 public:
-	virtual void build() = 0;
-	virtual std::vector<std::string> gatherMeshesToLoad() = 0;
-	virtual std::vector<std::string> gatherTexturesToLoad() = 0;
-protected:
-	cgltf_data* m_modelMeta{nullptr};
-	std::string m_name;
+	struct ModelDesc {
+		std::string name;
+		uint32_t meshCount;
+		uint32_t instanceCount;
+		uint32_t isAnimated;
+		glm::vec3 initPosition;
+		bool isBlend;
+		std::vector<Mesh::MeshDesc> m_meshDesc;
+	};
+
+	Model(ModelDesc, const cgltf_data*);
+	virtual void build();
+	virtual std::vector<std::string> gatherMeshesToLoad();
+	virtual std::vector<std::string> gatherTexturesToLoad();
+
+	ModelDesc m_modelDesc;
+	const cgltf_data* m_modelMeta{nullptr};
 	glm::vec3 m_position;
+
+protected:
+	std::vector<Mesh> m_meshes;
 };
 
-class AnimatedModel : IModel {
+class AnimatedModel : Model {
 public:
-	AnimatedModel(const rapidjson::Value&);
+	AnimatedModel(ModelDesc, const cgltf_data*);
 
 	void build() override;
 	std::vector<std::string> gatherMeshesToLoad() override;
@@ -38,21 +52,10 @@ public:
 
 private:
 	float m_currentAnimTime;
-	std::vector<AnimatedMesh> meshes;
+	std::vector<AnimatedMesh> m_animatedMeshes;
 };
 
-class StandardModel : IModel {
-public:
-	StandardModel(const rapidjson::Value&);
-	std::vector<std::string> gatherMeshesToLoad() override;
-	std::vector<std::string> gatherTexturesToLoad() override;
-	void build() override;
-
-private:
-	StandardMesh mesh;
-};
-
-class BatchedModel : IModel {
+class BatchedModel : Model {
 public:
 	BatchedModel(const rapidjson::Value&);
 
@@ -63,12 +66,13 @@ private:
 class ModelLoader {
 public:
 	ModelLoader();
-	ModelLoader(std::vector<std::string> names);
-	uint8_t LoadModel(const char* i_name);
+	~ModelLoader();
+	void assignModelsToLoad(std::vector<Model::ModelDesc>);
+	uint8_t loadModels();
 	const cgltf_data* getModel(const char* i_name);
 
 private:
-	std::unordered_map<const char*, const cgltf_data*> m_loadedModels;
+	std::unordered_map<const char*, cgltf_data*> m_models;
 };
 
 #endif//MODEL_H

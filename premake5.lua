@@ -40,6 +40,7 @@ project "Misanthrope"
 	-- header only libs
 	includedirs {"extern/", "src/", "extern/tracy/public/tracy"}
 	files {"src/**.cpp"}
+	removefiles {"src/legacy/**"}
 	files {"extern/tracy/public/TracyClient.cpp"}
 
 	defines {"TRACY_ENABLE", "TRACY_VK_USE_SYMBOL_TABLE", "ENABLE_OPTIMIZE_MESH"}
@@ -51,10 +52,14 @@ project "Misanthrope"
 
 	warnings "Default"
 
+	local vulkanLibPath = os.findlib("vulkan-1", "C:/VulkanSDK/")
+	printf("Vulkan Path: ", vulkanLibPath)
+
 	filter "system:windows"
 		toolset "msc"
-		libdirs {"C:/VulkanSDK/1.3.283.0/Lib"}
-		includedirs {"C:/VulkanSDK/1.3.283.0/Include"}
+		libdirs {"C:/VulkanSDK/1.3.275.0/Lib"}
+		includedirs {"C:/VulkanSDK/1.3.275.0/Include"}
+		-- libdirs {vulkanLibPath}
 		links {"vulkan-1"}
 		-- for tracy
 		defines {"_WIN32_WINNT=0x0602", "WINVER=0x0602"}
@@ -62,9 +67,9 @@ project "Misanthrope"
 	filter {}
 
 	filter "system:linux"
-		-- local vulanLib = os.findlib("vulkan")
 		libdirs {"/usr/local/bin/1.3.296.0/x86_64/lib"}
-		-- includedirs {"/usr/local/bin/1.3.296.0/x86_64/include/"}
+		includedirs {"/usr/local/bin/1.3.296.0/x86_64/include/"}
+		-- libdirs {vulkanLibPath}
 		-- for backward stacktrace
 		links {"vulkan", "dw"}
 	filter {}
@@ -74,7 +79,7 @@ project "Misanthrope"
 
 -----------------------------------------------------------------------------------------------
 
-project "meshOptimizer"
+project "meshoptimizer"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"

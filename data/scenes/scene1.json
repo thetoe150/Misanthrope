@@ -20,7 +20,8 @@
 						"",
 						""
 					],
-					"animation": true
+					"animation": true,
+					"blend": true
 				}
 			],
 			"animation": false,
@@ -46,7 +47,8 @@
 						"",
 						""
 					],
-					"animation": true
+					"animation": true,
+					"blend": true
 				},
 				{
 					"vsShader": [
@@ -59,7 +61,8 @@
 						"",
 						""
 					],
-					"animation": false
+					"animation": false,
+					"blend": false
 				},
 				{
 					"vsShader": [
@@ -72,11 +75,22 @@
 						"",
 						""
 					],
-					"animation": true
+					"animation": false,
+					"blend": false
 				}
 			],
 			"animation": true,
 			"instance": 1
+		}
+	],
+
+	"shaders": [
+		{
+			"name": ""
+		},
+		{
+		},
+		{
 		}
 	]
 }

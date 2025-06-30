@@ -9,7 +9,9 @@
 class Scene {
 public:
 	Scene(std::string);
-	void initScene();
+	void initModelDesc();
+	void initShaderDesc();
+	void initModels();
 	void parseScene();
 
 	// auto now = std::chrono::high_resolution_clock::now();
@@ -24,10 +26,12 @@ public:
 
 private:
 	rapidjson::Document m_sceneMeta;
+	std::vector<Model::ModelDesc> m_modelDesc;
 
+	std::vector<Model> m_models;
 	std::vector<AnimatedModel> m_animatedModels;
-	std::vector<StandardModel> m_models;
 	std::vector<BatchedModel> m_batchedModels;
+
 
 	ModelLoader m_modelLoader;
 	MeshLoader m_meshLoader;
