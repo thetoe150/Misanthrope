@@ -29,9 +29,9 @@ private:
 };
 
 typedef struct {
-	VkImage image;
+	vk::Image image;
 	VmaAllocation allocation;
-	VkImageView view;
+	vk::ImageView view;
 } Image;
 
 typedef struct {

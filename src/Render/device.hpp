@@ -1,4 +1,3 @@
-#include "vulkan/vulkan.h"
 #include "vulkan/vulkan.hpp"
 #include "GLFW/include/glfw3.h"
 #include "optional"
@@ -33,9 +32,9 @@ struct QueueFamilyIndices {
 };
 
 struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
+	vk::SurfaceCapabilitiesKHR capabilities;
+    std::vector<vk::SurfaceFormatKHR> formats;
+    std::vector<vk::PresentModeKHR> presentModes;
 };
 
 class Device {
@@ -51,19 +50,19 @@ bool checkValidationLayerSupport();
 std::vector<const char*> getRequiredExtensions();
 void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 void pickPhysicalDevice();
-bool isDeviceSuitable(VkPhysicalDevice device);
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-VkSampleCountFlagBits getMaxUsableSampleCount();
-VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-VkFormat findHDRColorFormat();
-VkFormat findDepthFormat();
-bool hasStencilComponent(VkFormat format);
-VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-VkBool32 isFormatFilterable(VkFormat format, VkImageTiling tiling);
+bool isDeviceSuitable(vk::PhysicalDevice device);
+QueueFamilyIndices findQueueFamilies(vk::PhysicalDevice device);
+bool checkDeviceExtensionSupport(vk::PhysicalDevice device);
+SwapChainSupportDetails querySwapChainSupport(vk::PhysicalDevice device);
+vk::SampleCountFlagBits getMaxUsableSampleCount();
+vk::Format findSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features);
+vk::Format findHDRColorFormat();
+vk::Format findDepthFormat();
+bool hasStencilComponent(vk::Format format);
+vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
+vk::Extent2D chooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
+vk::Bool32 isFormatFilterable(vk::Format format, vk::ImageTiling tiling);
 
 void printPhysicalDeviceProperties();
 void printSwapchainProperties();
@@ -72,28 +71,27 @@ void printPhysicalDeviceFormats();
 void printQueueFamilyProperties();
 
 private:
-	VkInstance m_instance;
-	VkSurfaceKHR m_surface;
-	VkSwapchainKHR m_swapChain;
-    VkPhysicalDevice m_physicalDevice;
-    VkQueue m_graphicQueue;
-    VkQueue m_computeQueue;
-    VkQueue m_presentQueue;
-	std::shared_ptr<VkDevice> m_device;
+	vk::Instance m_instance;
+	vk::SurfaceKHR m_surface;
+	vk::SwapchainKHR m_swapChain;
+    vk::PhysicalDevice m_physicalDevice;
+    vk::Queue m_graphicQueue;
+    vk::Queue m_computeQueue;
+    vk::Queue m_presentQueue;
+	vk::Device m_device;
 
     GLFWwindow* m_window;
-    VkDebugUtilsMessengerEXT m_debugMessenger;
-    VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
-	VkPhysicalDeviceProperties m_physicalDeviceProperties;
+	VkDebugUtilsMessengerEXT m_debugMessenger;
+    vk::SampleCountFlagBits m_msaaSamples = vk::SampleCountFlagBits::e1;
+	vk::PhysicalDeviceProperties m_physicalDeviceProperties;
 	SwapChainSupportDetails m_swapchainProperties;
 
-    std::vector<VkImage> m_swapChainImages;
-
-    VkFormat m_swapchainImageFormat;
-    VkExtent2D swapChainExtent;
-    VkExtent2D m_shadowExtent;
+    std::vector<vk::Image> m_swapChainImages;
+	vk::Format m_swapchainImageFormat;
+    vk::Extent2D swapChainExtent;
+    vk::Extent2D m_shadowExtent;
 	bool m_isHDR{false};
-    VkFormat m_renderTargetImageFormat;
-	VkFormat m_depthFormat;
+	vk::Format m_renderTargetImageFormat;
+	vk::Format m_depthFormat;
 	PFN_vkCmdSetPrimitiveTopologyEXT m_vkCmdSetPrimitiveTopologyEXT;
 };

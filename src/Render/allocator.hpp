@@ -2,7 +2,7 @@
 #define ALLOCATOR_H_INCLUDED 
 
 #include <memory>
-#include "vulkan/vulkan.h"
+#include "vulkan/vulkan.hpp"
 #include "vma/vk_mem_alloc.h"
 
 struct Slot {

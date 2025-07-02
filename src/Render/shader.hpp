@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H 
 
-#include "vulkan/vulkan.h"
+#include "vulkan/vulkan.hpp"
 #include <vector>
 #include <stdexcept>
 #include <unordered_map>
@@ -10,12 +10,12 @@
 #include "util.hpp"
 
 typedef struct {
-	VkShaderModule module;
+	vk::ShaderModule module;
 	// SpvReflectShaderModule reflection;
 	std::vector<uint8_t> source;
 } Shader;
 
-VkShaderModule createShaderModule(VkDevice device, const std::vector<uint8_t>& code);
+vk::ShaderModule createShaderModule(vk::Device device, const std::vector<uint8_t>& code);
 
 class ShaderLoader {
 public:

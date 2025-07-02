@@ -86,20 +86,20 @@ private:
 
 struct VertexInstance {
 
-	static VkVertexInputBindingDescription getBindingDescription(){
-		VkVertexInputBindingDescription bindingDescription{};
+	static vk::VertexInputBindingDescription getBindingDescription(){
+		vk::VertexInputBindingDescription bindingDescription{};
 		bindingDescription.binding = 4;
 		bindingDescription.stride = sizeof(VertexInstance);
-        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
+        bindingDescription.inputRate = vk::VertexInputRate::eInstance;
 
 		return bindingDescription;
 	}
 
-	static std::array<VkVertexInputAttributeDescription, 1> getAttributeDescriptions(){
-		std::array<VkVertexInputAttributeDescription, 1> attributeDescriptions{};
+	static std::array<vk::VertexInputAttributeDescription, 1> getAttributeDescriptions(){
+		std::array<vk::VertexInputAttributeDescription, 1> attributeDescriptions{};
 		attributeDescriptions[0].binding = 4;
 		attributeDescriptions[0].location = 4;
-		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[0].format = vk::Format::eR32G32B32Sfloat;
 		// attributeDescriptions[0].offset = offsetof(VertexInstance, pos);
 		attributeDescriptions[0].offset = 0;
 
