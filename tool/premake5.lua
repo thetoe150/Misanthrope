@@ -50,7 +50,7 @@ project "Exporter"
 	location "build"
 
 	-- header only libs
-	includedirs {"../extern", "include", "../extern/backward/include"}
+	includedirs {"../extern", "include", "../extern/backward/include", "../src/Render"}
 	files {"src/*.cpp", "../extern/backward/src/backward.cpp"}
 
 	filter "system:linux"

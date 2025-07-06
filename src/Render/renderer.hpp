@@ -34,4 +34,8 @@ class Drawcall {
 };
 
 class Renderer {
+public:
+
+private:
+	vk::Device m_device;
 };

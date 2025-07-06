@@ -27,6 +27,7 @@ public:
 private:
 	rapidjson::Document m_sceneMeta;
 	std::vector<Model::ModelDesc> m_modelDesc;
+	std::vector<Reflection> m_shaderReflection;
 
 	std::vector<Model> m_models;
 	std::vector<AnimatedModel> m_animatedModels;
