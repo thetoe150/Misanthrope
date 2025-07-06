@@ -43,12 +43,12 @@ void ModelLoader::assignModelsToLoad(std::vector<Model::ModelDesc> i_modelDesc) 
 uint8_t ModelLoader::loadModels() {
 	for (auto& [modelName, data] : m_models) {
 		std::string modelPath = MODEL_PATH + modelName + "/scene.gltf";
-		auto result = ParseGltfFile(modelPath.c_str());
+		std::optional<cgltf_data*> result = ParseGltfFile(modelPath.c_str());
 		if (result.has_value()) {
 			data = result.value();
 		}
 		else {
-			printf("Fail to load model %s", modelName);
+			printf("model not found %s", modelName);
 			return 1;
 		}
 	}

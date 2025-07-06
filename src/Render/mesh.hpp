@@ -11,6 +11,7 @@
 #include "allocator.hpp"
 #include "cgltf/cgltf.h"
 #include "meshoptimizer.h"
+#include "material.hpp"
 
 // manage mesh data proccessed by model and create runtime vk objects, 1 mesh / drawcall
 // info from this class is used to create drawcall
@@ -20,8 +21,8 @@ public:
 		std::string name;
 		uint32_t meshCount;
 		uint32_t instanceCount;
-		bool isBlend;
 		bool isAnimated;
+		Material material;
 	};
 	virtual void acquireGpuResource();
 private:

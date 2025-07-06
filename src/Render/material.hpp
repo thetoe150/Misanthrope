@@ -13,11 +13,14 @@
 class IMaterial {
 public:
 private:
-	std::string name;
-	std::string fragmentShader;
+	std::string m_name;
+	std::string m_fShader;
+	std::vector<std::string> m_texture;
+
+	bool isBlend;
 };
 
-class StandardMaterial : IMaterial {
+class Material : IMaterial {
 public:
 private:
 	std::unordered_map<std::string, cgltf_material> materialMeta;
