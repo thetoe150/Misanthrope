@@ -6,6 +6,7 @@
 /src/shaders/*.spv
 /src/shaders/*.spvasm
 /.cache/
-/compile_commands.json
+/build/compile_commands.json
+/tool/build/compile_commands.json
 /tool/build/
 /tool/bin/
