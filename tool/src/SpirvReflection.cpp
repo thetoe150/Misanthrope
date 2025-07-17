@@ -27,7 +27,7 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 	std::map<uint32_t, Type> types;
 	std::map<uint32_t, uint32_t> pointerToType;
 
-	Binding cacheBinding[MAX_DESCRIPTOR_SET * MAX_BINDING];
+	Descriptor cacheBinding[MAX_DESCRIPTOR_SET * MAX_BINDING];
 	uint8_t bindingCacheCount{0};
 
 	uint32_t w = 0;
@@ -97,7 +97,7 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 							break;
 						}
 					}
-					Binding& b = cacheBinding[it];
+					Descriptor& b = cacheBinding[it];
 					if (first) {
 						b.id = id;
 						assert(names.find(b.id) != names.end() && "This id have no name or OpName is called late");
@@ -227,9 +227,9 @@ Reflection parseSpirv(const uint32_t* spvBlob, uint32_t spvSize) {
 					}
 
 					if (storageClass == SpvStorageClassUniformConstant)
-						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = Descriptor::SAMPLER;
+						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = DescriptorType::SAMPLER;
 					else if (storageClass == SpvStorageClassUniform)
-						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = Descriptor::UNIFORM;
+						reflection.descriptorSets[setIt].bindings[globalBindingIdx].type = DescriptorType::UNIFORM;
 
 					// push constant don't have decoration for it
 					// else if (storageClass == uint32_t(9))
@@ -257,7 +257,7 @@ void printReflection(const Reflection& reflection) {
 	printf("Binding Count %i\n", reflection.totalBindingCount);
 	for(unsigned int i = 0; i < reflection.descriptorSetCount; i++) {
 		for(unsigned int j = 0; j < reflection.descriptorSets[i].bindingCount; j++) {
-			const Binding& bin = reflection.descriptorSets[i].bindings[j];
+			const Descriptor& bin = reflection.descriptorSets[i].bindings[j];
 			printf("At binding %i of set %i, named %s, type %i (id %i)\n", bin.bindingIdx, bin.setIdx, bin.name.c_str(), bin.type, bin.id);
 		}
 	}

@@ -25,7 +25,14 @@ enum class Type {
 	F3x3,
 	F4x4,
 
-	COUNT,
+	COUNT
+};
+
+enum class Stage : uint8_t {
+	VERTEX = (1 << 0),
+	FRAGMENT = (1 << 1),
+
+	COUNT
 };
 
 enum class BlockType {
@@ -33,7 +40,7 @@ enum class BlockType {
 	ARRAY_OF_STRUCT,
 	RUNTIME_ARRAY_OF_STRUCT,
 
-	COUNT,
+	COUNT
 };
 
 enum class Semantic {
@@ -48,17 +55,17 @@ enum class Semantic {
 	COUNT
 };
 
-enum class Descriptor {
+enum class DescriptorType {
 	UNIFORM,
-	// DYNAMIC_UNIFORM???,
-	// STORAGE???,
-	// PUSH_CONSTANT,
+	DYNAMIC_UNIFORM,
+	STORAGE,
+	PUSH_CONSTANT,
 	SAMPLER,
+
 	COUNT,
 };
 
 struct Location {
-	uint32_t id;
 	std::string name;
 	Semantic semantic;
 	Type type;
@@ -66,24 +73,28 @@ struct Location {
 	bool isInput;
 };
 
-struct Binding {
-	uint32_t id;
+struct Descriptor {
 	std::string name;
-	Descriptor type{Descriptor::COUNT};
-	int8_t bindingIdx{-1};
-	int8_t setIdx{-1};
+	DescriptorType type{DescriptorType::COUNT};
+
+	union DescriptorDesc {
+		int8_t blockIdx;
+		int8_t samplerIdx{-1};
+	};
+	DescriptorDesc descIdx;
 };
 
 struct PushConstant {
-	uint32_t id;
 	std::string name;
 	Type type;
 	uint8_t size;
+	Stage stage;
 };
 
 struct DescriptorSet {
 	uint8_t bindingCount{0};
-	Binding bindings[MAX_BINDING];
+	Descriptor bindings[MAX_BINDING];
+	Stage stage;
 };
 
 struct BlockMember {
@@ -93,20 +104,14 @@ struct BlockMember {
 };
 
 struct Block {
-	uint32_t id;
 	BlockType type;
 	uint8_t memberCount{0};
 	BlockMember members[MAX_MEMBER];
 	uint32_t arraySize;
 	uint8_t stride;
-
-	uint8_t setIdx;
-	uint8_t bindingIdx;
 };
 
 struct Sampler {
-	uint8_t setIdx;
-	uint8_t bindingIdx;
 };
 
 struct Reflection {
@@ -135,7 +140,7 @@ class Shader {
 	vk::ShaderModule m_module;
 	Reflection m_reflection;
 	std::vector<uint8_t> m_blob;
-} Shader;
+};
 
 vk::ShaderModule createShaderModule(vk::Device device, const std::vector<uint8_t>& code);
 

@@ -16,14 +16,13 @@ private:
 	std::string m_name;
 	std::string m_fShader;
 	std::vector<std::string> m_texture;
-
-	bool isBlend;
+	cgltf_material materialMeta;
+	bool m_isBlend;
 };
 
 class Material : IMaterial {
 public:
 private:
-	std::unordered_map<std::string, cgltf_material> materialMeta;
 };
 
 class ShadowMaterial : IMaterial {
