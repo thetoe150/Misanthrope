@@ -83,140 +83,148 @@
 			"instance": 1
 		}
 	],
-	"shaderReflection": {
-		"shaders": [
-			{
-				"name": "snowflake",
-				"type": "vertex",
-				"reflection": {
-					"locationCount": 3,
-					"location": [1, 2, 3],
-					"descriptorSetCount": 2,
-					"descriptorSet": [],
-					"binding": [],
-					"pushConstant": [],
-					"block": [],
-					"sampler": []
+	"shaderReflection": [
+		{
+			"shaders": [
+				{
+					"name": "snowflake",
+					"type": "vertex",
+					"reflection": {
+						"locationCount": 3,
+						"location": [1, 2, 3],
+						"descriptorSetCount": 2,
+						"descriptorSet": [],
+						"pushConstant": [],
+						"block": [],
+						"sampler": []
+					}
+				},
+				{
+					"name": "snowflake",
+					"type": "fragment",
+					"reflection": {
+						"locationCount": 3,
+						"location": [1, 2, 3],
+						"descriptorSetCount": 2,
+						"descriptorSet": [],
+						"pushConstant": [],
+						"block": [],
+						"sampler": []
+					}
+				},
+			],
+			"locations" : [
+				{
+					"name": "",
+					"semantic": "",
+					"type": "",
+					"location": 1,
+					"isInput": true
+				},
+				{
+					"name": "",
+					"semantic": "",
+					"type": "",
+					"location": 1,
+					"isInput": true
+				},
+				{
+					"name": "",
+					"semantic": "",
+					"type": "",
+					"location": 1,
+					"isInput": true
 				}
-			},
-			{
-			}
-		],
-		"locations" : [
-			{
-				"name": "",
-				"semantic": "",
-				"type": "",
-				"location": 1,
-				"isInput": true
-			},
-			{
-				"name": "",
-				"semantic": "",
-				"type": "",
-				"location": 1,
-				"isInput": true
-			},
-			{
-				"name": "",
-				"semantic": "",
-				"type": "",
-				"location": 1,
-				"isInput": true
-			}
-		],
-		"bindings": [
-			{
-				"name": "hehe",
-				"type": "uniform"
-				"bindingIdx": 1,
-				"setIdx": 0
-			},
-			{
-				"name": "hehe",
-				"type": "uniform"
-				"bindingIdx": 1,
-				"setIdx": 0
-			},
-			{
-				"name": "hehe",
-				"type": "uniform"
-				"bindingIdx": 1,
-				"setIdx": 0
-			}
-		],
-		"descriptorSets": [
-			{
-				"bindingCount": 3,
-				"binding": [2,3,4]
-			},
-			{
-				"bindingCount": 3,
-				"binding": [2,3,4]
-			},
-			{
-				"bindingCount": 3,
-				"binding": [2,3,4]
-			}
-		],
-		"pushConstants": [
-			{
-				"name": "hehe",
-				"type": "F2",
-				"size": 8
-			},
-			{
-				"name": "hehe",
-				"type": "F2",
-				"size": 8
-			},
-			{
-				"name": "hehe",
-				"type": "F2",
-				"size": 8
-			}
-		],
-		"blocks": [
-			{
-				"blockType": "dAoS"
-				"memberCount": 3,
-				"member": [
-					2,
-					1,
-					1
-				],
-				"arraySize": 3,
-				"stride": 16,
-				"bindingIdx": 2,
-				"setIdx": 2
-			},
-			{
-				"blockType": "dAoS"
-				"memberCount": 1,
-				"member": [
-					2,
-					1,
-					1
-				],
-				"arraySize": 3,
-				"stride": 16,
-				"bindingIdx": 2,
-				"setIdx": 2
-			}
-		],
-		"members": [
-			{
-				"name": "hehe",
-				"type": "F3",
-				"offset": 4
-			},
-			{
-				"name": "hehe",
-				"type": "F3",
-				"offset": 4
-			}
-		],
-		"samplers": [
-		]
-	}
+			],
+			"bindings": [
+				{
+					"name": "hehe",
+					"type": "uniform"
+					"blockIdx": -1,
+					"sampler": -1
+				},
+				{
+					"name": "hehe",
+					"type": "uniform"
+					"blockIdx": -1,
+					"sampler": -1
+				},
+				{
+					"name": "hehe",
+					"type": "uniform"
+					"blockIdx": -1,
+					"sampler": -1
+				}
+			],
+			"descriptorSets": [
+				{
+					"bindingCount": 3,
+					"binding": [2,3,4]
+				},
+				{
+					"bindingCount": 3,
+					"binding": [2,3,4]
+				},
+				{
+					"bindingCount": 3,
+					"binding": [2,3,4]
+				}
+			],
+			"pushConstants": [
+				{
+					"name": "hehe",
+					"type": "F2",
+					"size": 8
+				},
+				{
+					"name": "hehe",
+					"type": "F2",
+					"size": 8
+				},
+				{
+					"name": "hehe",
+					"type": "F2",
+					"size": 8
+				}
+			],
+			"blocks": [
+				{
+					"blockType": "dAoS"
+					"memberCount": 3,
+					"member": [
+						2,
+						1,
+						1
+					],
+					"arraySize": 3,
+					"stride": 16
+				},
+				{
+					"blockType": "dAoS"
+					"memberCount": 1,
+					"member": [
+						2,
+						1,
+						1
+					],
+					"arraySize": 3,
+					"stride": 16
+				}
+			],
+			"members": [
+				{
+					"name": "hehe",
+					"type": "F3",
+					"offset": 4
+				},
+				{
+					"name": "hehe",
+					"type": "F3",
+					"offset": 4
+				}
+			],
+			"samplers": [
+			]
+		}
+	]
 }

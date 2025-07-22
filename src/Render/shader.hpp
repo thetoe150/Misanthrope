@@ -55,7 +55,7 @@ enum class Semantic {
 	COUNT
 };
 
-enum class DescriptorType {
+enum class BindingType {
 	UNIFORM,
 	DYNAMIC_UNIFORM,
 	STORAGE,
@@ -73,15 +73,15 @@ struct Location {
 	bool isInput;
 };
 
-struct Descriptor {
+struct Binding {
 	std::string name;
-	DescriptorType type{DescriptorType::COUNT};
+	BindingType type{BindingType::COUNT};
 
-	union DescriptorDesc {
+	union BindingDesc {
 		int8_t blockIdx;
 		int8_t samplerIdx{-1};
 	};
-	DescriptorDesc descIdx;
+	BindingDesc descIdx;
 };
 
 struct PushConstant {
@@ -93,7 +93,7 @@ struct PushConstant {
 
 struct DescriptorSet {
 	uint8_t bindingCount{0};
-	Descriptor bindings[MAX_BINDING];
+	BindingType bindings[MAX_BINDING];
 	Stage stage;
 };
 
@@ -133,10 +133,6 @@ struct Reflection {
 };
 
 class Shader {
-	struct Reflection {
-
-	};
-
 	vk::ShaderModule m_module;
 	Reflection m_reflection;
 	std::vector<uint8_t> m_blob;
