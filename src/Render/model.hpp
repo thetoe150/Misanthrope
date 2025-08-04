@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <unordered_map>
+#include "robin_map/robin_map.h"
 
 #include "cgltf/cgltf.h"
 
@@ -72,7 +72,7 @@ public:
 	const cgltf_data* getModel(const char* i_name);
 
 private:
-	std::unordered_map<const char*, cgltf_data*> m_models;
+	tsl::robin_map<const char*, cgltf_data*> m_models;
 };
 
 #endif//MODEL_H

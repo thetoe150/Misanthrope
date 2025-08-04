@@ -2,7 +2,7 @@
 #define MESH_H 
 
 #include <memory>
-#include <unordered_map>
+#include "robin_map/robin_map.h"
 #include <string>
 #include <vector>
 #include <array>
@@ -81,8 +81,8 @@ public:
 	uint8_t loadMeshes(std::vector<cgltf_data*>);
 	cgltf_mesh ProvideMesh(std::string);
 private:
-	std::unordered_map<std::string, std::shared_ptr<cgltf_mesh>> meshMetas;
-	std::unordered_map<std::string, std::shared_ptr<MemoryView>> meshes;
+	tsl::robin_map<std::string, std::shared_ptr<cgltf_mesh>> meshMetas;
+	tsl::robin_map<std::string, std::shared_ptr<MemoryView>> meshes;
 };
 
 struct VertexInstance {

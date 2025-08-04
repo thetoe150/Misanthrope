@@ -4,7 +4,7 @@
 #include "vulkan/vulkan.hpp"
 #include <vector>
 #include <stdexcept>
-#include <unordered_map>
+#include "robin_map/robin_map.h"
 #include <memory>
 
 #include "util.hpp"
@@ -145,7 +145,7 @@ public:
 	ShaderLoader();
 	void LoadShader();
 private:
-	std::unordered_map<std::string, std::shared_ptr<MemoryView>> m_shaders;
+	tsl::robin_map<std::string, std::shared_ptr<MemoryView>> m_shaders;
 };
 
 #endif//SHADER_H 
