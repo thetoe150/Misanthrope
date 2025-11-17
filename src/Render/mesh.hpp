@@ -19,7 +19,7 @@ class Mesh {
 public:
 	struct MeshDesc {
 		std::string name;
-		uint32_t meshCount;
+		uint32_t primitiveCount;
 		uint32_t instanceCount;
 		bool isAnimated;
 		Material material;

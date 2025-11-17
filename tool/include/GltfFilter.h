@@ -9,6 +9,8 @@
 #include "rapidjson/prettywriter.h"
 #include <rapidjson/error/en.h>
 
+#include "cgltf/cgltf.h"
+
 struct Blob {
 	Blob() {
 	};
