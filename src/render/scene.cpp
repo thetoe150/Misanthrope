@@ -61,7 +61,7 @@ void Scene::initModelDesc() {
 						desc.isAnimated = mesh["animation"].GetBool();
 					}
 					if (mesh.HasMember("blend") && mesh["blend"].IsBool()) {
-						desc.isBlend = mesh["blend"].GetBool();
+						// desc.isBlend = mesh["blend"].GetBool();
 					}
 
 					meshDesc.push_back(desc);

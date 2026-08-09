@@ -11,22 +11,21 @@
 
 #include <cstdint>
 #include <optional>
+#include <vector>
+#include <fstream>
+#include <iostream>
 
 struct MemoryView {
 	uint8_t* data{0};
 	uint32_t size{0};
 };
 
-std::optional<MemoryView> LoadFile(const char*);
+bool IsFileExist(const std::string& filename);
+bool MakeFile(const std::string& filename);
+void WriteFile(const std::string& filename, char* data, size_t size);
+std::vector<uint8_t> ReadFile(const std::string& filename);
+
 std::optional<rapidjson::Document> ParseJsonFile(const char* i_name);
 std::optional<cgltf_data*> ParseGltfFile(const char* i_name);
-
-#define CHECK_VK_RESULT(f, msg)																	\
-{																								\
-	if(VkResult res = f){																		\
-		throw std::runtime_error(msg + vk::to_string((vk::Result)res));							\
-	}																							\
-}																								\
-
 
 #endif//UTIL_H

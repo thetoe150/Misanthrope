@@ -1,2 +1,2 @@
-#include "Render/scene.hpp"
-#include "global.hpp"
+#include "render/device.hpp"
+#include "render/platform.hpp"

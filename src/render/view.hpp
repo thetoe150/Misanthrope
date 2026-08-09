@@ -17,7 +17,7 @@ public:
 	void Sort();
 private:
 	Frustum m_frustum;
-	Camera m_camera;
+	// Camera m_camera;
 	ViewSink m_sink;
 };
 

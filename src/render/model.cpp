@@ -24,38 +24,35 @@ void AnimatedModel::traverseModelNodesForTransform() {
 
 };
 
-ModelLoader::ModelLoader() {
+ModelManager::ModelManager() {
 
 };
 
-ModelLoader::~ModelLoader() {
+ModelManager::~ModelManager() {
 	for (auto& [modelName, data] : m_models) {
 		cgltf_free(data);
 	}
 };
 
-void ModelLoader::assignModelsToLoad(std::vector<Model::ModelDesc> i_modelDesc) {
-	for (const auto& desc : i_modelDesc) {
-		m_models.insert({desc.name.c_str(), nullptr});
-	}
-}
-
-uint8_t ModelLoader::loadModels() {
-	for (auto& [modelName, data] : m_models) {
-		std::string modelPath = MODEL_PATH + modelName + "/scene.gltf";
+bool ModelManager::loadModels(std::vector<std::string> i_paths) {
+	for (const auto& path : i_paths) {
+		std::string modelPath = path + "/scene.gltf";
 		std::optional<cgltf_data*> result = ParseGltfFile(modelPath.c_str());
 		if (result.has_value()) {
-			data = result.value();
+			cgltf_data* data = result.value();
+			// should these loading happen elsewhere?
+			cgltf_options options = {cgltf_file_type_gltf};
+			cgltf_load_buffers(&options, data, modelPath.c_str());
+
+			m_models.insert(std::pair(path, data));
 		}
-		else {
-			printf("model not found %s", modelName);
-			return 1;
-		}
+		else 
+			return false;
 	}
 
-	return 0;
+	return true;
 };
 
-const cgltf_data* ModelLoader::getModel(const char* i_name) {
+const cgltf_data* ModelManager::getModel(const char* i_name) {
 	return m_models[i_name];
 }

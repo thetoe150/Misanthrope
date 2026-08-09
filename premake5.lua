@@ -39,6 +39,7 @@ project "Misanthrope"
 	includedirs {"extern/GLFW/include/", "extern/backward/include/", "extern/imgui/include/", "extern/meshoptimizer/include/", "extern/spirv_reflect/include/"}
 	-- header only libs
 	includedirs {"extern/", "src/", "extern/tracy/public/tracy"}
+	-- files {"src/**.cpp"}
 	files {"src/**.cpp"}
 	removefiles {"src/legacy/**"}
 	files {"extern/tracy/public/TracyClient.cpp"}
@@ -52,7 +53,7 @@ project "Misanthrope"
 
 	warnings "Default"
 
-	local vulkanLibPath = os.findlib("vulkan-1", "C:/VulkanSDK/")
+	local vulkanLibPath = os.findlib()
 	printf("Vulkan Path: ", vulkanLibPath)
 
 	filter "system:windows"
@@ -67,8 +68,8 @@ project "Misanthrope"
 	filter {}
 
 	filter "system:linux"
-		libdirs {"/usr/local/bin/1.3.296.0/x86_64/lib"}
-		includedirs {"/usr/local/bin/1.3.296.0/x86_64/include/"}
+		libdirs {"/home/eanigmal/Code/vulkan/1.4.335.0/x86_64/lib"}
+		includedirs {"/home/eanigmal/Code/vulkan/1.4.335.0/x86_64/include"}
 		-- libdirs {vulkanLibPath}
 		-- for backward stacktrace
 		links {"vulkan", "dw"}
