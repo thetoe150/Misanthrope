@@ -38,7 +38,8 @@ class Mesh {
     virtual void createUniformBuffer();
 
    protected:
-    cgltf_mesh* m_meshData;
+    cgltf_data* m_model;
+    cgltf_mesh* m_mesh;
     MeshDesc m_meshDesc;
     Allocator* m_gpuAllocator;
     MemoryView m_instanceData;
@@ -56,8 +57,7 @@ class StaticMesh : Mesh {
     void createUniformBuffer() override;
 
    private:
-    std::shared_ptr<cgltf_mesh> meshMeta;
-    MemoryView mesh;
+    std::shared_ptr<cgltf_mesh> m_meshMeta;
 
     GfxBuffer m_vertexBuffer;
     std::vector<GfxBuffer> m_indexBuffers;
@@ -73,13 +73,16 @@ class AnimatedMesh : Mesh {
     void createIndexBuffer() override;
     void createUniformBuffer() override;
 
-    void traverseModelNodesForTransform(cgltf_data* i_model, const cgltf_node* node, glm::mat4 mat);
+    void traverseModelNodesForTransform(const cgltf_node* node, glm::mat4 mat);
+    std::vector<float> computeFrameWeights(unsigned int meshIdx, float deltaTime);
+    void computeFrameMorphTargets(unsigned int meshIdx, std::vector<float> weights);
 
    private:
-    MemoryView morphTarget;
+    tsl::robin_map<std::string, GfxBuffer> m_vertexBuffers;
+    GfxBuffer m_positionBuffer;
 
-    std::vector<GfxBuffer> m_indexBuffers;
-    std::vector<GfxBuffer> m_vertexBuffers;
+    unsigned int m_currentAnimTime;
+    unsigned int m_currentDeltaTime;
 };
 
 class BatchedMesh : Mesh {
